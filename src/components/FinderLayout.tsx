@@ -179,7 +179,7 @@ export default function FinderLayout({
             <div className="flex-1 bg-white flex flex-col overflow-hidden rounded-tr-xl rounded-br-xl">
                 {/* Content Header / Toolbar (Unified Look) */}
                 <div
-                    className="h-[52px] border-b border-gray-100 flex items-center px-8 justify-between select-none bg-white shrink-0"
+                    className="h-[52px] border-b border-gray-100 flex items-center !px-5 justify-between select-none bg-white shrink-0"
                     onPointerDown={(e) => {
                         dragControls?.start(e);
                         onFocus?.();
@@ -200,7 +200,7 @@ export default function FinderLayout({
                 </div>
 
                 {/* Grid Area */}
-                <div className="flex-1 px-10 py-10 grid grid-cols-4 gap-y-12 gap-x-10 content-start overflow-y-auto"
+                <div className="flex-1 !px-6 !py-6 grid grid-cols-4 gap-y-8 gap-x-6 content-start overflow-y-auto"
                     onClick={() => setSelectedFileId(null)} // Deselect on bg click
                 >
                     {files.map((file) => (
@@ -244,10 +244,10 @@ function FinderSidebar({
     );
 
     return (
-        <div className="w-[260px] flex flex-col bg-gray-50/90 backdrop-blur-3xl text-gray-600 border-r border-gray-200/50 rounded-tl-xl rounded-bl-xl">
+        <div className="w-[240px] flex flex-col bg-gray-50/90 backdrop-blur-3xl text-gray-600 border-r border-gray-200/50 rounded-tl-xl rounded-bl-xl">
             {/* Header with Traffic Lights - Aligned with Content Header Height */}
             <div
-                className="h-[52px] pl-10 flex items-center gap-2 group shrink-0"
+                className="h-[52px] !pl-3 flex items-center gap-2 group shrink-0"
                 onPointerDown={(e) => {
                     dragControls?.start(e);
                     onFocus?.();
@@ -275,10 +275,10 @@ function FinderSidebar({
             </div>
 
             {/* Sidebar Content */}
-            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6">
+            <div className="flex-1 overflow-y-auto !px-2 !py-2 space-y-2">
                 {/* Favorites Section */}
-                <div className="space-y-1">
-                    <div className="px-2 text-[11px] font-semibold text-gray-400/80 mb-1">Favorites</div>
+                <div className="space-y-0">
+                    <div className="px-2 text-[10px] font-semibold text-gray-400/80 mb-0.5">Favorites</div>
                     <div className="space-y-[1px]">
                         <SidebarItem icon={<MacSidebarIcon type="work" size={16} />} label="Work" active={false} />
                         <SidebarItem icon={<MacSidebarIcon type="user" size={16} />} label="About Me" active={false} />
@@ -288,8 +288,8 @@ function FinderSidebar({
                 </div>
 
                 {/* Locations Section (Projects) */}
-                <div className="space-y-1">
-                    <div className="px-2 text-[11px] font-semibold text-gray-400/80 mb-1">Locations</div>
+                <div className="space-y-0">
+                    <div className="px-2 text-[10px] font-semibold text-gray-400/80 mb-0.5">Locations</div>
                     <div className="space-y-[1px]">
                         {projects.map((p) => (
                             <SidebarItem
@@ -304,13 +304,6 @@ function FinderSidebar({
                 </div>
             </div>
 
-            {/* Bottom Storage (Decorative) */}
-            <div className="px-5 pt-8 pb-4">
-                <div className="h-1.5 w-full bg-gray-200/60 rounded-full overflow-hidden">
-                    <div className="h-full bg-gray-400/50 w-[70%] rounded-full"></div>
-                </div>
-                <p className="text-[10px] text-gray-400 mt-2.5 font-medium tracking-wide">100 GB available</p>
-            </div>
         </div>
     );
 }
@@ -319,11 +312,11 @@ function SidebarItem({ icon, label, active, onClick }: { icon: React.ReactNode; 
     return (
         <div
             onClick={onClick}
-            className={`px-3 py-2.5 rounded-[6px] flex items-center gap-3 cursor-pointer transition-colors
+            className={`!px-2 !py-1 rounded-[6px] flex items-center gap-2 cursor-pointer transition-colors
                 ${active ? "bg-blue-50 text-blue-600 font-medium" : "hover:bg-gray-100/80 text-gray-600 hover:text-black"}`}
         >
             <span className={`w-4 h-4 flex items-center justify-center opacity-80 ${active ? "opacity-100" : ""}`}>{icon}</span>
-            <span className="text-[13px] tracking-tight">{label}</span>
+            <span className="text-[12px] tracking-tight">{label}</span>
         </div>
     );
 }
