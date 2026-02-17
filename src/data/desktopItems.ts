@@ -3,11 +3,11 @@
  * Each item defines its icon appearance, position on the desktop, and window content when opened.
  *
  * Layout:
- *   Top-left    → SystemLogs.app (narrative entry point) -- MOVED DOWN to clear sticky note
+ *   Top-left    → SystemLogs.app (narrative entry point)
  *   Mid-left    → README.md (personal intro)
  *   Right col   → Projects (Nutrika → HNC Studio → Referentiel → GameOnWeb → KakouQuest)
- *   Bottom-center → CoreModules.app (technical stack) -- MOVED UP to clear dock
- *   Bottom-right  → Trash (decorative)
+ *   Bottom-center → CoreModules.app (technical stack)
+ *   Bottom-right  → Trash (Easter egg)
  */
 
 export type DesktopItemType = "folder" | "file" | "terminal" | "trash";
@@ -19,7 +19,8 @@ export type WindowContentType =
     | "about"
     | "terminal"
     | "readme"
-    | "core-modules";
+    | "core-modules"
+    | "trash-content";
 
 /* ─── Project Section — consistent structure across all projects ─── */
 
@@ -58,12 +59,12 @@ export interface DesktopItem {
    ═══════════════════════════════════════════════════════════ */
 
 export const desktopItems: DesktopItem[] = [
-    /* ─── Top-left — Narrative entry point (moved far down to clear sticky note) ─── */
+    /* ─── Top-left — Narrative entry point ─── */
     {
         id: "system-logs",
         label: "SystemLogs.app",
         type: "terminal",
-        position: { x: 6, y: 60 }, // Moved y:35 -> y:60
+        position: { x: 6, y: 60 },
         window: {
             title: "SystemLogs",
             contentType: "terminal",
@@ -75,7 +76,7 @@ export const desktopItems: DesktopItem[] = [
         id: "readme",
         label: "README.md",
         type: "file",
-        position: { x: 6, y: 78 }, // Moved y:55 -> y:78
+        position: { x: 6, y: 78 },
         window: {
             title: "README.md",
             contentType: "readme",
@@ -97,27 +98,27 @@ export const desktopItems: DesktopItem[] = [
             sections: [
                 {
                     heading: "Context",
-                    body: "In early 2025, I wanted to build something that combined AI, real-time data, and a genuine everyday problem. Nutrition felt like the perfect domain — complex enough to be interesting, personal enough to care about.",
+                    body: "Nutrika started from a simple observation: people often know what they have in their fridge, but not what to do with it.",
                 },
                 {
                     heading: "Problem",
-                    body: "Most nutrition apps treat food as static data entry. They ignore what people actually have at home, what they like, and how their needs evolve. The result? Apps that feel like spreadsheets, not coaches.",
+                    body: "Online recipes are disconnected from real-life constraints. How can we generate structured, healthy meal suggestions based on available ingredients, personal dietary goals, and macro objectives?",
                 },
                 {
                     heading: "My Role",
-                    body: "Sole developer — from system architecture to UI polish. I designed the database schema, built the API, integrated OpenAI for intelligent meal generation, and crafted the mobile experience from scratch.",
+                    body: "Product conception, AI system architecture, ingredient parsing logic, UX structuring, and nutrition evaluation model.",
                 },
                 {
                     heading: "Technical Approach",
-                    body: "React Native + Expo for the mobile client. NestJS + Prisma + PostgreSQL for a typed, scalable backend. OpenAI API for personalized recipe generation based on fridge inventory, dietary habits, and metabolic profile. Real-time sync between inventory, planning, and shopping lists.",
+                    body: "Python backend with AI agents for structured data extraction. Macro-nutrient calculation and context-aware recommendation system.",
                 },
                 {
                     heading: "What I Learned",
-                    body: "How to architect a full production system alone — from database migrations to API rate limiting to mobile state management. The hardest part wasn't the code, it was designing the data model to be flexible enough for AI-generated content while staying predictable for the user.",
+                    body: "AI is not impressive by itself. The real challenge is designing intelligence around the user.",
                 },
                 {
                     heading: "Why It Matters",
-                    body: "Nutrika isn't a school project. It's a real product I use daily. It taught me that building for yourself is the fastest way to build something good — because you're the hardest user to satisfy.",
+                    body: "Nutrika reflects my interest in transforming chaos into structure — and designing systems that assist real decisions.",
                 },
             ],
             caseStudyUrl: "/p/nutrika",
@@ -136,27 +137,27 @@ export const desktopItems: DesktopItem[] = [
             sections: [
                 {
                     heading: "Context",
-                    body: "HNC Studio started as a creative label — a way to sign my freelance work. Over time, it evolved into a full operational system: brand identity, internal ERP, client management, and a structured creative pipeline I call the Golden Path.",
+                    body: "HNC Studio started as a creative initiative. It evolved into a structured ecosystem.",
                 },
                 {
                     heading: "Problem",
-                    body: "Freelancing without structure leads to inconsistent quality and lost time. I needed a system that could handle client briefs, project tracking, invoicing, and creative direction — all in one place, all my way.",
+                    body: "Creative projects become chaotic without structure: clients, deals, shootings, deliveries, invoicing. Most freelancers stack tools. I chose to design my own system.",
                 },
                 {
                     heading: "My Role",
-                    body: "Founder, designer, and developer. I built the brand from scratch, designed the visual identity in Figma, developed the web presence, and engineered the internal tools that keep everything running.",
+                    body: "Founder, creative direction, web development, motion design, and ERP architecture.",
                 },
                 {
                     heading: "Technical Approach",
-                    body: "Next.js for the public-facing site with Framer Motion animations. Internal ERP built with a custom data layer. Figma for all design work. The Golden Path methodology structures every project from brief to delivery with clear milestones.",
+                    body: "Next.js + Tailwind + Framer Motion. Modular ERP logic with 'Golden Path' workflow structuring: Client → Deal → Project → Tasks → Delivery → Invoice.",
                 },
                 {
                     heading: "What I Learned",
-                    body: "That creative direction and development aren't separate skills — they're two sides of the same coin. Building systems that enforce quality is more valuable than relying on talent alone.",
+                    body: "Creativity without structure collapses. Structure without creativity stagnates. The balance is intentional system design.",
                 },
                 {
                     heading: "Why It Matters",
-                    body: "HNC Studio is proof that I think in systems, not just features. It's where creative vision meets operational discipline — the exact intersection that Ingémédia explores.",
+                    body: "HNC reflects my desire to merge artistic direction with technical architecture.",
                 },
             ],
             caseStudyUrl: "/p/hnc-studio",
@@ -175,27 +176,27 @@ export const desktopItems: DesktopItem[] = [
             sections: [
                 {
                     heading: "Context",
-                    body: "During my BUT Informatique, I completed professional internships that put me in real production environments. The Référentiel project was born from these experiences — a structured tool for managing competency frameworks and professional evaluations.",
+                    body: "Developed during my alternance at Cash Systèmes Industrie. Goal: centralize internal product and workflow logic.",
                 },
                 {
                     heading: "Problem",
-                    body: "Tracking skills acquisition across multiple domains, mapping them to institutional frameworks, and generating meaningful progress reports is tedious when done manually. Existing tools were either too generic or too rigid.",
+                    body: "Disconnected data flows. Lack of tracking visibility. Need for structured states and transitions.",
                 },
                 {
                     heading: "My Role",
-                    body: "Full-stack developer in a professional context. I was responsible for translating institutional requirements into functional specifications, then building the tool from database design to user interface.",
+                    body: "Backend architecture, MongoDB workflow modeling, state management logic, and integration into existing ecosystem.",
                 },
                 {
                     heading: "Technical Approach",
-                    body: "Structured data modeling to represent competency hierarchies. Clean CRUD operations with validation. Responsive interface designed for both administrators and students. Focus on data integrity and clear reporting.",
+                    body: "Spring Boot, Spring Data MongoDB. JSON-based workflow states and event-driven structure.",
                 },
                 {
                     heading: "What I Learned",
-                    body: "Working within institutional constraints taught me that real-world software isn't about what's technically elegant — it's about what actually gets adopted. Stakeholder communication became as important as code quality.",
+                    body: "Real systems involve real constraints. Architecture impacts people, not just code.",
                 },
                 {
                     heading: "Why It Matters",
-                    body: "This project showed me the gap between academic projects and professional deliverables. It's where I learned that maturity in software engineering comes from shipping things that other people depend on.",
+                    body: "This project shifted my mindset from feature development to system design.",
                 },
             ],
         },
@@ -213,27 +214,27 @@ export const desktopItems: DesktopItem[] = [
             sections: [
                 {
                     heading: "Context",
-                    body: "National web game competition. Our team had a few weeks to design and build a complete browser-based game from scratch.",
+                    body: "Exploration of 3D interaction directly in the browser.",
                 },
                 {
                     heading: "Problem",
-                    body: "Building a performant 3D game in the browser with no game engine — just WebGL, math, and creativity.",
+                    body: "How to create spatial interaction within a traditionally flat medium?",
                 },
                 {
                     heading: "My Role",
-                    body: "Lead developer — gameplay systems, 3D rendering pipeline, and overall architecture.",
+                    body: "Scene setup, interaction logic, camera management, and animation loops.",
                 },
                 {
                     heading: "Technical Approach",
-                    body: "Babylon.js for 3D rendering. TypeScript for type safety at scale. Custom game loop, physics, and asset pipeline. Node.js backend for multiplayer features.",
+                    body: "Three.js, WebGL. Real-time rendering and interactive controls.",
                 },
                 {
                     heading: "What I Learned",
-                    body: "Performance matters — every millisecond counts at 60fps. Also learned to scope aggressively under time pressure.",
+                    body: "Web interaction is evolving beyond static interfaces. Space changes perception.",
                 },
                 {
                     heading: "Why It Matters",
-                    body: "Proved I can build complex interactive experiences under constraints — exactly the kind of challenge Ingémédia specializes in.",
+                    body: "",
                 },
             ],
             caseStudyUrl: "/p/gameonweb",
@@ -252,27 +253,45 @@ export const desktopItems: DesktopItem[] = [
             sections: [
                 {
                     heading: "Context",
-                    body: "Academic project exploring gamification as a tool for cultural education and local heritage preservation.",
+                    body: "First-year academic project. Objective: build a playable game using Java.",
                 },
                 {
                     heading: "Problem",
-                    body: "Young audiences don't engage with traditional cultural content. We needed an interactive format that makes learning feel like playing.",
+                    body: "Managing object-oriented architecture, game loop logic, and state handling.",
                 },
                 {
                     heading: "My Role",
-                    body: "Game designer and front-end developer — from concept to playable prototype.",
+                    body: "Gameplay mechanics, character system, and interaction logic.",
                 },
                 {
                     heading: "Technical Approach",
-                    body: "JavaScript with Canvas API for the game engine. Node.js + Express backend for content management. Focus on progressive difficulty and narrative-driven level design.",
+                    body: "Java OOP principles, game state management.",
                 },
                 {
                     heading: "What I Learned",
-                    body: "That the best technical solutions are invisible to the user. Good UX in a game means the player never thinks about the code.",
+                    body: "Structure precedes complexity. Architecture determines scalability.",
                 },
                 {
                     heading: "Why It Matters",
-                    body: "My first real project combining interactivity, narrative, and technology — the foundation of everything I've built since.",
+                    body: "", // No "Why It Matters" in user prompt for KakouQuest/GameOnWeb? Wait, "Why It Matters" was in GameOnWeb prompt: "Proved I can build complex..." -> Wait, user prompt for GameOnWeb: "Web interaction is evolving... Space changes perception." (This was under "What I Learned"). "Why It Matters" section missing in prompt for GameOnWeb? And KakouQuest?
+                    /*
+                    Actually, looking closely at User Prompt:
+                    GameOnWeb:
+                    - Context
+                    - Problem
+                    - My Role
+                    - Technical Approach
+                    - What I Learned
+                    (No "Why It Matters")
+
+                    KakouQuest:
+                    - Context
+                    - Problem
+                    - My Role
+                    - Technical Approach
+                    - What I Learned
+                    (No "Why It Matters")
+                    */
                 },
             ],
             caseStudyUrl: "/p/kakouquest",
@@ -291,7 +310,7 @@ export const desktopItems: DesktopItem[] = [
         },
     },
 
-    /* ─── Bottom right — Trash (decorative) ─── */
+    /* ─── Bottom right — Trash (Easter egg) ─── */
     {
         id: "trash",
         label: "Trash",
@@ -299,7 +318,7 @@ export const desktopItems: DesktopItem[] = [
         position: { x: 92, y: 88 },
         window: {
             title: "Trash",
-            contentType: "about", // won't actually open
+            contentType: "trash-content",
         },
     },
 ];

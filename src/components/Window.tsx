@@ -172,6 +172,8 @@ function WindowContent({ config }: { config: WindowConfig }) {
             return <ReadmeContent />;
         case "core-modules":
             return <CoreModulesContent />;
+        case "trash-content":
+            return <TrashContent />;
         case "terminal":
             return null;
         default:
@@ -179,99 +181,157 @@ function WindowContent({ config }: { config: WindowConfig }) {
     }
 }
 
-/* ─── Project Content (sections-based) ─── */
+/* ─── Project Content (Finder-style Master-Detail) ─── */
+import { useState } from "react";
+
 function ProjectContent({ config }: { config: WindowConfig }) {
+    // Default to first section or empty
+    const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+    const sections = config.sections || [];
+    const activeSection = sections[activeSectionIndex];
+
+    // If no sections (legacy fallback), show simple description
+    if (!sections.length) {
+        return (
+            <div className="p-6 text-sm text-gray-600 leading-relaxed">
+                {config.description || "No content details available."}
+            </div>
+        );
+    }
+
     return (
-        <div className="space-y-5">
-            {/* Legacy description fallback */}
-            {config.description && (
-                <p className="text-sm text-gray-500 leading-relaxed">
-                    {config.description}
-                </p>
-            )}
-
-            {/* Sections — consistent 6-part structure */}
-            {config.sections?.map((s: ProjectSection) => (
-                <div key={s.heading}>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">
-                        {s.heading}
-                    </h3>
-                    <p className="text-sm text-gray-700 leading-relaxed">
-                        {s.body}
-                    </p>
+        <div className="flex h-full absolute inset-0 text-left">
+            {/* ─── Sidebar (Finder Left Pane) ─── */}
+            <div className="w-[180px] bg-gray-50/80 border-r border-gray-200/50 flex flex-col p-3 shrink-0 backdrop-blur-md">
+                <div className="text-xs font-semibold text-gray-400 px-2 mb-2 uppercase tracking-wide">
+                    Overview
                 </div>
-            ))}
+                <nav className="space-y-0.5 flex-1 overflow-y-auto">
+                    {sections.map((s, idx) => {
+                        const isActive = idx === activeSectionIndex;
+                        return (
+                            <button
+                                key={s.heading}
+                                onClick={() => setActiveSectionIndex(idx)}
+                                className={`w-full text-left px-2 py-1.5 rounded-[4px] text-[13px] font-medium transition-colors flex items-center gap-2
+                                    ${isActive
+                                        ? "bg-blue-500 text-white shadow-sm"
+                                        : "text-gray-600 hover:bg-gray-200/60 active:bg-gray-300"
+                                    }`}
+                            >
+                                {/* Simple icon based on heading (optional polish) */}
+                                <span className={isActive ? "opacity-100" : "opacity-50"}>
+                                    {getIconForHeading(s.heading)}
+                                </span>
+                                {s.heading}
+                            </button>
+                        );
+                    })}
+                </nav>
 
-            {config.bullets && (
-                <ul className="space-y-3">
-                    {config.bullets.map((b: ProjectBullet) => (
-                        <li key={b.label} className="flex gap-3 text-sm">
-                            <span className="font-semibold text-gray-700 min-w-[80px] shrink-0">
-                                {b.label}
-                            </span>
-                            <span className="text-gray-600">{b.value}</span>
-                        </li>
-                    ))}
-                </ul>
-            )}
+                {/* Bottom Metadata / Actions Area */}
+                {config.caseStudyUrl && (
+                    <div className="mt-4 pt-3 border-t border-gray-200/50">
+                        <button
+                            className="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded
+                                bg-white border border-gray-300 shadow-sm
+                                text-xs font-medium text-gray-700
+                                hover:bg-gray-50 active:scale-[0.98] transition-all"
+                            onClick={() => {
+                                /* Phase 3: navigate */
+                            }}
+                        >
+                            Case Study ↗
+                        </button>
+                    </div>
+                )}
+            </div>
 
-            {config.caseStudyUrl && (
-                <button
-                    className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg
-          bg-gray-900 text-white text-sm font-medium
-          hover:bg-gray-800 transition-colors
-          focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    onClick={() => {
-                        /* Phase 3: navigate to case study */
-                    }}
-                >
-                    Open Case Study
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path
-                            d="M2.5 9.5L9.5 2.5M9.5 2.5H4.5M9.5 2.5V7.5"
-                            stroke="currentColor"
-                            strokeWidth="1.3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
-                </button>
-            )}
+            {/* ─── Main Content (Finder Right Pane) ─── */}
+            <div className="flex-1 bg-white p-8 overflow-y-auto">
+                <div className="max-w-[420px]">
+                    <h3 className="text-xl font-bold text-gray-900 mb-6 tracking-tight">
+                        {activeSection?.heading}
+                    </h3>
+                    <div className="space-y-4">
+                        {/* Split paragraphs if needed */}
+                        <p className="text-[15px] leading-7 text-gray-600 font-normal">
+                            {activeSection?.body}
+                        </p>
+                    </div>
+
+                    {/* Show bullets only on first section or specific "Technical" section?
+                        For now, let's show bullets if they exist nicely at the bottom of standard content,
+                        but maybe better to have a "Specs" tab?
+                        Let's just keep bullets out for now as sections cover most data.
+                    */}
+                </div>
+            </div>
         </div>
     );
+}
+
+/** Helper icon mapper */
+function getIconForHeading(heading: string) {
+    const h = heading.toLowerCase();
+    if (h.includes("context")) return "📑";
+    if (h.includes("problem")) return "🎯";
+    if (h.includes("role")) return "👤";
+    if (h.includes("technical")) return "⚡️";
+    if (h.includes("learned")) return "💡";
+    if (h.includes("why")) return "💭";
+    return "📄";
 }
 
 /* ─── README Content ─── */
 function ReadmeContent() {
     return (
-        <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-2">
-                <span className="text-lg">📄</span>
-                <h2 className="text-base font-semibold text-gray-800">README.md</h2>
-            </div>
-            <p className="text-sm text-gray-600 leading-relaxed">
-                Hugo Cohen-Cofflard — Developer, designer, system thinker.
-            </p>
-            <p className="text-sm text-gray-600 leading-relaxed">
-                I build things that sit at the intersection of technology and creative direction.
-                My work spans full-stack development, UI/UX design, photography, and video production.
-            </p>
-            <p className="text-sm text-gray-600 leading-relaxed">
-                I believe the best products come from people who understand both the system and the story.
-                Code is structure. Design is emotion. The interesting work happens where they meet.
-            </p>
-            <div className="border-t pt-4 mt-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Currently</h3>
-                <p className="text-sm text-gray-700">Applying to Master Ingémédia — Université de Toulon</p>
-            </div>
-            <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Focus Areas</h3>
-                <div className="flex flex-wrap gap-2">
-                    {["Full-Stack Dev", "UI/UX Design", "Creative Direction", "System Architecture", "AI Integration", "Photography"].map(tag => (
-                        <span key={tag} className="px-2.5 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                            {tag}
-                        </span>
-                    ))}
+        <div className="space-y-6">
+            <h2 className="text-xl font-bold text-gray-900 tracking-tight">Hugo Cohen</h2>
+
+            <div className="space-y-4">
+                <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                    This is not just a portfolio.<br />
+                    It’s a system in progress.
+                </p>
+
+                <div className="space-y-2">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 border-b border-gray-100 pb-1 mb-2">Who I Am</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                        I grew up surrounded by computers. Opening them before I fully understood them.
+                    </p>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                        I have explored many directions: development, 3D, virtual machines, photography, video, AI systems.
+                        I never stayed in one lane for long. I explored.
+                    </p>
+                </div>
+
+                <div className="space-y-2">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 border-b border-gray-100 pb-1 mb-2">The Development Phase</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                        For years, development felt like the logical path. I became capable. I learned architecture and production constraints.
+                    </p>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                        But at some point, I realized I am more interested in <span className="text-gray-900 font-medium">why we build</span>, than only <span className="text-gray-900 font-medium">how we build</span>.
+                    </p>
+                </div>
+
+                <div className="space-y-2">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 border-b border-gray-100 pb-1 mb-2">Where I Stand Today</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                        I am still evolving. What remains constant: I am fascinated by systems — technical systems, creative systems, interactive systems.
+                    </p>
+                </div>
+
+                <div className="space-y-2">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 border-b border-gray-100 pb-1 mb-2">Why Ingémédia</h3>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                        I want to explore interaction beyond utility. To design experiences, not just applications. To experiment with narrative, motion and meaning.
+                    </p>
+                </div>
+
+                <div className="pt-2">
+                    <code className="text-xs text-green-600 font-mono block">System status: refining direction.</code>
                 </div>
             </div>
         </div>
@@ -281,35 +341,65 @@ function ReadmeContent() {
 /* ─── CoreModules Content ─── */
 function CoreModulesContent() {
     const modules = [
-        { name: "Frontend", items: ["React", "Next.js", "React Native", "Framer Motion", "Tailwind CSS", "TypeScript"] },
-        { name: "Backend", items: ["Node.js", "NestJS", "Express", "Prisma", "PostgreSQL", "REST APIs"] },
-        { name: "AI & Data", items: ["OpenAI API", "Prompt Engineering", "Structured Data Pipelines"] },
-        { name: "Creative", items: ["Figma", "Blender", "DaVinci Resolve", "Lightroom", "Color Grading"] },
-        { name: "DevOps", items: ["Git", "Docker", "Linux", "CI/CD", "Vercel"] },
-        { name: "Soft Skills", items: ["System Thinking", "Project Management", "Client Communication", "Creative Direction"] },
+        { name: "System Thinking", desc: "Designing structures before surfaces." },
+        { name: "Visual Direction", desc: "Light as emotion. Composition as narrative." },
+        { name: "Creative Development", desc: "Code as interactive medium." },
+        { name: "AI & Automation", desc: "Structuring intelligence around users." },
+        { name: "Project Architecture", desc: "From idea to delivery, through constraints." },
+        { name: "Motion & Energy", desc: "Capturing intensity through timing and framing." },
+    ];
+
+    return (
+        <div className="space-y-5">
+            <div className="flex items-center gap-3 border-b border-gray-100 pb-3">
+                <div className="w-10 h-10 bg-gray-900 rounded flex items-center justify-center text-white text-xl">
+                    🧠
+                </div>
+                <div>
+                    <h2 className="text-base font-bold text-gray-900">Core Modules</h2>
+                    <p className="text-xs text-gray-500">Active Competencies</p>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3">
+                {modules.map((mod) => (
+                    <div key={mod.name} className="p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
+                        <h3 className="text-sm font-semibold text-gray-800 mb-1">{mod.name}</h3>
+                        <p className="text-xs text-gray-600">{mod.desc}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+/* ─── Trash Content ─── */
+function TrashContent() {
+    const trashItems = [
+        "unfinished_ideas.txt",
+        "experimental_ui.fig",
+        "bad_render_v1.png",
+        "overcomplicated_system.js",
     ];
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg">🧠</span>
-                <h2 className="text-base font-semibold text-gray-800">Core Modules</h2>
+            <div className="p-4 bg-gray-50 rounded border border-gray-100 font-mono text-sm text-gray-500">
+                <p className="text-xs uppercase text-gray-400 mb-3 tracking-widest">/dev/null/history</p>
+                <ul className="space-y-2">
+                    {trashItems.map((item) => (
+                        <li key={item} className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity cursor-default">
+                            <span>📄</span>
+                            <span className="line-through decoration-gray-300">{item}</span>
+                        </li>
+                    ))}
+                </ul>
             </div>
-            <p className="text-xs text-gray-400 mb-3">Technical stack &amp; competencies — loaded and active.</p>
-            {modules.map(mod => (
-                <div key={mod.name}>
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
-                        {mod.name}
-                    </h3>
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                        {mod.items.map(item => (
-                            <span key={item} className="px-2.5 py-1 bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-md">
-                                {item}
-                            </span>
-                        ))}
-                    </div>
-                </div>
-            ))}
+            <p className="text-center text-xs text-gray-400 italic">
+                Petit clin d’œil à ton processus.
+                <br />
+                Rien ne se perd, tout se transforme.
+            </p>
         </div>
     );
 }
