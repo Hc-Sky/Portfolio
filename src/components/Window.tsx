@@ -12,6 +12,7 @@ import { type RefObject } from "react";
 import { motion, useDragControls } from "framer-motion";
 import type { WindowConfig, ProjectSection, ProjectBullet } from "@/data/desktopItems";
 import TerminalLogs from "./TerminalLogs";
+import FinderLayout from "./FinderLayout";
 
 const WINDOW_WIDTH = 620;
 
@@ -84,71 +85,92 @@ export default function Window({
             }}
             className="flex flex-col bg-white/90 backdrop-blur-xl rounded-xl overflow-hidden"
         >
-            {/* ─── Title Bar ─── */}
-            <div
-                className="h-10 px-4 flex items-center justify-between bg-gray-100/50
+            {/* ─── Title Bar (Classic) ─── */}
+            {/* For projects (headless), we skip this and let content handle it */}
+            {config.contentType !== "project" && (
+                <div
+                    className="h-10 px-4 flex items-center justify-between bg-gray-100/50
              border-b border-gray-200/50 cursor-grab active:cursor-grabbing select-none"
-                onPointerDown={(e) => {
-                    dragControls.start(e);
-                    onFocus();
-                }}
-            >
-                {/* Traffic Lights */}
-                <div className="flex gap-2 group" onPointerDown={(e) => e.stopPropagation()}>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onClose();
-                        }}
-                        className="w-3 h-3 rounded-full bg-[#FF5F57] hover:bg-[#FF5F57]/80
+                    onPointerDown={(e) => {
+                        dragControls.start(e);
+                        onFocus();
+                    }}
+                >
+                    {/* Traffic Lights */}
+                    <div className="flex gap-2 group" onPointerDown={(e) => e.stopPropagation()}>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onClose();
+                            }}
+                            className="w-3 h-3 rounded-full bg-[#FF5F57] hover:bg-[#FF5F57]/80
                    flex items-center justify-center border border-black/10 transition-colors"
-                        aria-label="Close"
-                    >
-                        <span className="opacity-0 group-hover:opacity-100 text-[8px] font-bold text-black/50">
-                            ×
-                        </span>
-                    </button>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onMinimize();
-                        }}
-                        className="w-3 h-3 rounded-full bg-[#FEBC2E] hover:bg-[#FEBC2E]/80
+                            aria-label="Close"
+                        >
+                            <span className="opacity-0 group-hover:opacity-100 text-[8px] font-bold text-black/50">
+                                ×
+                            </span>
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onMinimize();
+                            }}
+                            className="w-3 h-3 rounded-full bg-[#FEBC2E] hover:bg-[#FEBC2E]/80
                    flex items-center justify-center border border-black/10 transition-colors"
-                        aria-label="Minimize"
-                    >
-                        <span className="opacity-0 group-hover:opacity-100 text-[8px] font-bold text-black/50">
-                            –
-                        </span>
-                    </button>
-                    <button
-                        className="w-3 h-3 rounded-full bg-[#28C840] hover:bg-[#28C840]/80
+                            aria-label="Minimize"
+                        >
+                            <span className="opacity-0 group-hover:opacity-100 text-[8px] font-bold text-black/50">
+                                –
+                            </span>
+                        </button>
+                        <button
+                            className="w-3 h-3 rounded-full bg-[#28C840] hover:bg-[#28C840]/80
                    flex items-center justify-center border border-black/10 transition-colors"
-                        aria-label="Maximize"
-                    >
-                        <span className="opacity-0 group-hover:opacity-100 text-[6px] font-bold text-black/50">
-                            ↗
-                        </span>
-                    </button>
-                </div>
+                            aria-label="Maximize"
+                        >
+                            <span className="opacity-0 group-hover:opacity-100 text-[6px] font-bold text-black/50">
+                                ↗
+                            </span>
+                        </button>
+                    </div>
 
-                {/* Title */}
-                <div className="absolute inset-x-0 flex justify-center pointer-events-none">
-                    <span className="text-xs font-semibold text-gray-500/90">
-                        {config.title}
-                    </span>
+                    {/* Title */}
+                    <div className="absolute inset-x-0 flex justify-center pointer-events-none">
+                        <span className="text-xs font-semibold text-gray-500/90">
+                            {config.title}
+                        </span>
+                    </div>
                 </div>
-            </div>
+            )}
+
             {/* Content area — terminal gets dark bg, others white */}
             {config.contentType === "terminal" ? (
                 <div onMouseDown={(e) => e.stopPropagation()}>
                     <TerminalLogs onOpenWindow={onOpenWindow} />
                 </div>
+            ) : config.contentType === "project" ? (
+                /* Finder Layout: Full width/height, manages its own scroll/padding/controls */
+                <div
+                    className="flex-1 bg-white text-gray-800 overflow-hidden rounded-xl"
+                    style={{ height: "100%", minHeight: 300 }}
+                    onMouseDown={(e) => e.stopPropagation()}
+                >
+                    <FinderLayout
+                        config={config}
+                        onOpenWindow={onOpenWindow}
+                        onClose={onClose}
+                        onMinimize={onMinimize}
+                        dragControls={dragControls}
+                        onFocus={onFocus}
+                    />
+                </div>
             ) : (
+                /* Generic Content: Default padding */
                 <div
                     className="p-6 overflow-y-auto bg-white text-gray-800"
                     style={{ maxHeight: "calc(80vh - 40px)", minHeight: 300 }}
-                    onMouseDown={(e) => e.stopPropagation()} // Allow selecting text inside
+                    onMouseDown={(e) => e.stopPropagation()}
                 >
                     <WindowContent config={config} />
                 </div>
@@ -160,8 +182,6 @@ export default function Window({
 /** Routes content rendering based on contentType */
 function WindowContent({ config }: { config: WindowConfig }) {
     switch (config.contentType) {
-        case "project":
-            return <ProjectContent config={config} />;
         case "resume":
             return <ResumeContent />;
         case "contact":
@@ -181,107 +201,7 @@ function WindowContent({ config }: { config: WindowConfig }) {
     }
 }
 
-/* ─── Project Content (Finder-style Master-Detail) ─── */
-import { useState } from "react";
 
-function ProjectContent({ config }: { config: WindowConfig }) {
-    // Default to first section or empty
-    const [activeSectionIndex, setActiveSectionIndex] = useState(0);
-    const sections = config.sections || [];
-    const activeSection = sections[activeSectionIndex];
-
-    // If no sections (legacy fallback), show simple description
-    if (!sections.length) {
-        return (
-            <div className="p-6 text-sm text-gray-600 leading-relaxed">
-                {config.description || "No content details available."}
-            </div>
-        );
-    }
-
-    return (
-        <div className="flex h-full absolute inset-0 text-left">
-            {/* ─── Sidebar (Finder Left Pane) ─── */}
-            <div className="w-[180px] bg-gray-50/80 border-r border-gray-200/50 flex flex-col p-3 shrink-0 backdrop-blur-md">
-                <div className="text-xs font-semibold text-gray-400 px-2 mb-2 uppercase tracking-wide">
-                    Overview
-                </div>
-                <nav className="space-y-0.5 flex-1 overflow-y-auto">
-                    {sections.map((s, idx) => {
-                        const isActive = idx === activeSectionIndex;
-                        return (
-                            <button
-                                key={s.heading}
-                                onClick={() => setActiveSectionIndex(idx)}
-                                className={`w-full text-left px-2 py-1.5 rounded-[4px] text-[13px] font-medium transition-colors flex items-center gap-2
-                                    ${isActive
-                                        ? "bg-blue-500 text-white shadow-sm"
-                                        : "text-gray-600 hover:bg-gray-200/60 active:bg-gray-300"
-                                    }`}
-                            >
-                                {/* Simple icon based on heading (optional polish) */}
-                                <span className={isActive ? "opacity-100" : "opacity-50"}>
-                                    {getIconForHeading(s.heading)}
-                                </span>
-                                {s.heading}
-                            </button>
-                        );
-                    })}
-                </nav>
-
-                {/* Bottom Metadata / Actions Area */}
-                {config.caseStudyUrl && (
-                    <div className="mt-4 pt-3 border-t border-gray-200/50">
-                        <button
-                            className="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded
-                                bg-white border border-gray-300 shadow-sm
-                                text-xs font-medium text-gray-700
-                                hover:bg-gray-50 active:scale-[0.98] transition-all"
-                            onClick={() => {
-                                /* Phase 3: navigate */
-                            }}
-                        >
-                            Case Study ↗
-                        </button>
-                    </div>
-                )}
-            </div>
-
-            {/* ─── Main Content (Finder Right Pane) ─── */}
-            <div className="flex-1 bg-white p-8 overflow-y-auto">
-                <div className="max-w-[420px]">
-                    <h3 className="text-xl font-bold text-gray-900 mb-6 tracking-tight">
-                        {activeSection?.heading}
-                    </h3>
-                    <div className="space-y-4">
-                        {/* Split paragraphs if needed */}
-                        <p className="text-[15px] leading-7 text-gray-600 font-normal">
-                            {activeSection?.body}
-                        </p>
-                    </div>
-
-                    {/* Show bullets only on first section or specific "Technical" section?
-                        For now, let's show bullets if they exist nicely at the bottom of standard content,
-                        but maybe better to have a "Specs" tab?
-                        Let's just keep bullets out for now as sections cover most data.
-                    */}
-                </div>
-            </div>
-        </div>
-    );
-}
-
-/** Helper icon mapper */
-function getIconForHeading(heading: string) {
-    const h = heading.toLowerCase();
-    if (h.includes("context")) return "📑";
-    if (h.includes("problem")) return "🎯";
-    if (h.includes("role")) return "👤";
-    if (h.includes("technical")) return "⚡️";
-    if (h.includes("learned")) return "💡";
-    if (h.includes("why")) return "💭";
-    return "📄";
-}
 
 /* ─── README Content ─── */
 function ReadmeContent() {

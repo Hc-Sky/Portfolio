@@ -304,7 +304,7 @@ function DockIcon({
                 onMouseLeave={() => setShowTooltip(false)}
                 className={`flex items-center justify-center rounded-xl select-none
           transition-shadow duration-150
-          focus:outline-none focus:ring-2 focus:ring-white/30
+          focus:outline-none 
           ${isClickable ? "cursor-pointer hover:shadow-lg" : "cursor-default"}`}
                 aria-label={item.label}
             >
@@ -318,12 +318,11 @@ function DockIcon({
             </motion.button>
 
             {/* Running indicator dot — dynamic based on open windows */}
-            {isRunning && (
-                <div
-                    className="w-1 h-1 rounded-full bg-white/70 mt-0.5"
-                    aria-hidden="true"
-                />
-            )}
+            <div
+                className={`w-1 h-1 rounded-full bg-white/70 mt-0.5 transition-opacity duration-200 ${isRunning ? "opacity-100" : "opacity-0"
+                    }`}
+                aria-hidden="true"
+            />
         </div>
     );
 }
