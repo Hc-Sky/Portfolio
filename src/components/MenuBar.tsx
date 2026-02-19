@@ -8,6 +8,7 @@
  */
 
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface MenuBarProps {
     onOpenWindow: (windowId: string) => void;
@@ -15,11 +16,28 @@ interface MenuBarProps {
 
 export default function MenuBar({ onOpenWindow }: MenuBarProps) {
     const [time, setTime] = useState("");
+    const { language, toggleLanguage } = useLanguage();
 
     /* ─── Live Clock ─── */
     useEffect(() => {
         const updateTime = () => {
             const now = new Date();
+            if (language === "fr") {
+                const formatted =
+                    now.toLocaleDateString("fr-FR", {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "short",
+                    }) +
+                    "  " +
+                    now.toLocaleTimeString("fr-FR", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                    });
+                setTime(formatted);
+                return;
+            }
+
             const weekday = now.toLocaleDateString("en-US", { weekday: "long" });
             const month = now.toLocaleDateString("en-US", { month: "short" });
             const day = now.getDate();
@@ -32,7 +50,7 @@ export default function MenuBar({ onOpenWindow }: MenuBarProps) {
         updateTime();
         const interval = setInterval(updateTime, 10_000);
         return () => clearInterval(interval);
-    }, []);
+    }, [language]);
 
     return (
         <div
@@ -72,7 +90,9 @@ export default function MenuBar({ onOpenWindow }: MenuBarProps) {
                         padding: 0,
                     }}
                 >
-                    Hugo Cohen--Cofflard&apos;s Portfolio
+                    {language === "fr"
+                        ? "Portfolio de Hugo Cohen-Cofflard"
+                        : "Hugo Cohen-Cofflard’s Portfolio"}
                 </button>
 
                 {/* Contact */}
@@ -90,7 +110,7 @@ export default function MenuBar({ onOpenWindow }: MenuBarProps) {
                         padding: 0,
                     }}
                 >
-                    Contact
+                    {language === "fr" ? "Contact" : "Contact"}
                 </button>
 
                 {/* Resume */}
@@ -108,7 +128,7 @@ export default function MenuBar({ onOpenWindow }: MenuBarProps) {
                         padding: 0,
                     }}
                 >
-                    Resume
+                    {language === "fr" ? "CV" : "Resume"}
                 </button>
             </div>
 
@@ -120,6 +140,14 @@ export default function MenuBar({ onOpenWindow }: MenuBarProps) {
                 <SearchIcon />
                 <ControlCenterIcon />
                 <SiriIcon />
+
+                <button
+                    onClick={toggleLanguage}
+                    className="rounded-md border border-white/20 px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide hover:bg-white/10 transition-colors"
+                    aria-label={language === "fr" ? "Passer en anglais" : "Switch to French"}
+                >
+                    {language === "fr" ? "FR" : "EN"}
+                </button>
 
                 {/* Clock */}
                 <span

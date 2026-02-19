@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
-import { desktopItems, WindowConfig, DesktopItem } from "@/data/desktopItems";
+import { WindowConfig, DesktopItem, getDesktopItems } from "@/data/desktopItems";
 import { DragControls } from "framer-motion";
+import { useLanguage } from "@/context/LanguageContext";
 import {
     IconFolder,
     IconFileText,
@@ -26,7 +27,7 @@ interface VirtualFile {
 
 /* ─── Helper: Generate Files from Config ─── */
 
-function generateVirtualFiles(config: WindowConfig): VirtualFile[] {
+function generateVirtualFiles(config: WindowConfig, language: "fr" | "en"): VirtualFile[] {
     const files: VirtualFile[] = [];
 
     // 1. README.md (The main content)
@@ -56,19 +57,22 @@ function generateVirtualFiles(config: WindowConfig): VirtualFile[] {
     if (config.caseStudyUrl) {
         files.push({
             id: "casestudy",
-            name: "Full Case Study.webloc",
+            name:
+                language === "fr"
+                    ? "Étude de cas complète.webloc"
+                    : "Full Case Study.webloc",
             type: "link",
             url: config.caseStudyUrl,
-            meta: "Web Link",
+            meta: language === "fr" ? "Lien web" : "Web Link",
         });
     }
 
     // 3. Assets Folder (Decorative)
     files.push({
         id: "assets",
-        name: "Assets",
+        name: language === "fr" ? "Ressources" : "Assets",
         type: "folder",
-        meta: "4 items",
+        meta: language === "fr" ? "4 éléments" : "4 items",
     });
 
     // 4. Specs.json (Technical details)
@@ -111,6 +115,8 @@ export default function FinderLayout({
 }: FinderLayoutProps) {
     const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
     const [openedFile, setOpenedFile] = useState<VirtualFile | null>(null);
+    const { language } = useLanguage();
+    const desktopItems = getDesktopItems(language);
 
     // Internal state for navigation (In-place updates)
     const [activeConfig, setActiveConfig] = useState(config);
@@ -135,7 +141,10 @@ export default function FinderLayout({
     };
 
     // Generate files for current view
-    const files = useMemo(() => generateVirtualFiles(activeConfig), [activeConfig]);
+    const files = useMemo(
+        () => generateVirtualFiles(activeConfig, language),
+        [activeConfig, language],
+    );
 
     // Handle File Double Click
     const handleOpenFile = (file: VirtualFile) => {
@@ -188,7 +197,9 @@ export default function FinderLayout({
                     {/* Title / Breadcrumbs (Centered or Left) */}
                     <div className="flex flex-col gap-0.5 justify-center">
                         <h1 className="text-[15px] font-semibold text-gray-800 tracking-tight leading-none">{activeConfig.title}</h1>
-                        <p className="text-[11px] text-gray-400 font-medium leading-none">Project Folder</p>
+                        <p className="text-[11px] text-gray-400 font-medium leading-none">
+                            {language === "fr" ? "Dossier projet" : "Project Folder"}
+                        </p>
                     </div>
                     {/* Search Icon (Reference Style) */}
                     <div className="flex gap-4 opacity-40">
@@ -238,8 +249,10 @@ function FinderSidebar({
     dragControls?: DragControls;
     onFocus?: () => void;
 }) {
+    const { language } = useLanguage();
+    const desktopItems = getDesktopItems(language);
     // Filter only projects for the "Locations" list
-    const projects = desktopItems.filter(item =>
+    const projects = desktopItems.filter((item: DesktopItem) =>
         item.window.contentType === "project" && item.id !== "trash"
     );
 
@@ -278,20 +291,40 @@ function FinderSidebar({
             <div className="flex-1 overflow-y-auto !px-2 !py-2 space-y-2">
                 {/* Favorites Section */}
                 <div className="space-y-0">
-                    <div className="px-2 text-[10px] font-semibold text-gray-400/80 mb-0.5">Favorites</div>
+                    <div className="px-2 text-[10px] font-semibold text-gray-400/80 mb-0.5">
+                        {language === "fr" ? "Favoris" : "Favorites"}
+                    </div>
                     <div className="space-y-[1px]">
-                        <SidebarItem icon={<MacSidebarIcon type="work" size={16} />} label="Work" active={false} />
-                        <SidebarItem icon={<MacSidebarIcon type="user" size={16} />} label="About Me" active={false} />
-                        <SidebarItem icon={<MacSidebarIcon type="resume" size={16} />} label="Resume" active={false} />
-                        <SidebarItem icon={<MacSidebarIcon type="trash" size={16} />} label="Trash" active={false} />
+                        <SidebarItem
+                            icon={<MacSidebarIcon type="work" size={16} />}
+                            label={language === "fr" ? "Travail" : "Work"}
+                            active={false}
+                        />
+                        <SidebarItem
+                            icon={<MacSidebarIcon type="user" size={16} />}
+                            label={language === "fr" ? "À propos" : "About Me"}
+                            active={false}
+                        />
+                        <SidebarItem
+                            icon={<MacSidebarIcon type="resume" size={16} />}
+                            label={language === "fr" ? "CV" : "Resume"}
+                            active={false}
+                        />
+                        <SidebarItem
+                            icon={<MacSidebarIcon type="trash" size={16} />}
+                            label={language === "fr" ? "Corbeille" : "Trash"}
+                            active={false}
+                        />
                     </div>
                 </div>
 
                 {/* Locations Section (Projects) */}
                 <div className="space-y-0">
-                    <div className="px-2 text-[10px] font-semibold text-gray-400/80 mb-0.5">Locations</div>
+                    <div className="px-2 text-[10px] font-semibold text-gray-400/80 mb-0.5">
+                        {language === "fr" ? "Emplacements" : "Locations"}
+                    </div>
                     <div className="space-y-[1px]">
-                        {projects.map((p) => (
+                        {projects.map((p: DesktopItem) => (
                             <SidebarItem
                                 key={p.id}
                                 icon={<MacSidebarIcon type="folder" size={16} />}
@@ -351,6 +384,7 @@ function FileIcon({ file, selected, onSelect, onOpen }: { file: VirtualFile; sel
 }
 
 function FilePreview({ file, onBack, dragControls, onFocus, onClose, onMinimize }: { file: VirtualFile; onBack: () => void; dragControls?: DragControls; onFocus?: () => void; onClose?: () => void; onMinimize?: () => void }) {
+    const { language } = useLanguage();
     // Default: Text Editor View (Markdown or JSON)
     return (
         <div className="flex flex-col h-full bg-white relative rounded-xl overflow-hidden shadow-2xl">
@@ -375,7 +409,7 @@ function FilePreview({ file, onBack, dragControls, onFocus, onClose, onMinimize 
                     onClick={onBack}
                     className="text-xs font-medium text-blue-600 hover:text-blue-700 active:opacity-70"
                 >
-                    Done
+                    {language === "fr" ? "Terminé" : "Done"}
                 </button>
             </div>
 
@@ -384,13 +418,17 @@ function FilePreview({ file, onBack, dragControls, onFocus, onClose, onMinimize 
                     <div className="flex flex-col items-center justify-center h-full gap-6">
                         <IconFileWeb size={96} />
                         <div className="text-center space-y-2">
-                            <h3 className="font-bold text-xl text-gray-900">External Link</h3>
+                            <h3 className="font-bold text-xl text-gray-900">
+                                {language === "fr" ? "Lien externe" : "External Link"}
+                            </h3>
                             <p className="text-gray-500 text-sm">{file.url}</p>
                         </div>
-                        <a href={file.url} target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 shadow-sm transition-all hover:scale-105 active:scale-95">Open Website</a>
+                        <a href={file.url} target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 shadow-sm transition-all hover:scale-105 active:scale-95">
+                            {language === "fr" ? "Ouvrir le site" : "Open Website"}
+                        </a>
                     </div>
                 ) : (
-                    file.content || "(No content)"
+                    file.content || (language === "fr" ? "(Aucun contenu)" : "(No content)")
                 )}
             </div>
         </div>

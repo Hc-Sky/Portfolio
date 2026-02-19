@@ -9,67 +9,120 @@
  * Final line: "System status: evolving."
  */
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 /* ─── Clickable line mappings ─── */
 
 /** Maps terminal line text → desktop item ID for clickable links */
-const CLICKABLE_LINES: Record<string, string> = {
-    "[2024] HNC Studio.": "hnc-studio",
-    "[2024] Nutrika.": "nutrika",
-};
-
-/* ─── Log Lines ─── */
-
-const lines: string[] = [
-    "> Booting HNC OS...",
-    "> Accessing memory archive...",
-    "",
-    "[2012] First contact with computers.",
-    "Opening and rebuilding PCs with my father.",
-    "Understanding hardware before software.",
-    "",
-    "[2015] First HTML experiments.",
-    "Recreating websites.",
-    "Learning through tutorials.",
-    "Trial. Error. Curiosity.",
-    "",
-    "[2016] Bootloader experimentation.",
-    "Linux virtual machines.",
-    "Breaking systems to understand them.",
-    "",
-    "[2018] Blender.",
-    "Dream of creating video games.",
-    "From 3D models to 3D printing.",
-    "",
-    "[2021-2023] STI2D — SIN.",
-    "Networks. Embedded systems.",
-    "Structured technical thinking.",
-    "",
-    "[2023–2026] BUT Informatique.",
-    "System architecture.",
-    "Project structuring.",
-    "Real production constraints.",
-    "",
-    "[Parallel Process] Photography & Video.",
-    "Circuit Paul Ricard.",
-    "Rallye du Var.",
-    "Understanding motion and light.",
-    "",
-    "[2023] Color grading.",
-    "Realizing that light is emotional.",
-    "",
-    "[2024] HNC Studio.",
-    "Creative direction meets system design.",
-    "",
-    "[2024] Nutrika.",
-    "AI-powered contextual nutrition coaching.",
-    "",
-    "System status: evolving.",
-];
-
-/** Flatten all lines into a single string with newlines, for char-by-char typing */
-const fullText = lines.join("\n");
+const LOGS = {
+    fr: {
+        clickableLines: {
+            "[2024] HNC Studio.": "hnc-studio",
+            "[2024] Nutrika.": "nutrika",
+        },
+        lines: [
+            "> Démarrage de HNC OS...",
+            "> Accès aux archives mémoire...",
+            "",
+            "[2012] Premier contact avec les ordinateurs.",
+            "Ouverture et remise à neuf de PC avec mon père.",
+            "Comprendre le matériel avant le logiciel.",
+            "",
+            "[2015] Premiers essais en HTML.",
+            "Recréer des sites web.",
+            "Apprendre via des tutos.",
+            "Essais. Erreurs. Curiosité.",
+            "",
+            "[2016] Expérimentation autour des bootloaders.",
+            "Machines virtuelles Linux.",
+            "Casser des systèmes pour les comprendre.",
+            "",
+            "[2018] Blender.",
+            "Rêve de créer des jeux vidéo.",
+            "Des modèles 3D à l’impression 3D.",
+            "",
+            "[2021-2023] STI2D — SIN.",
+            "Réseaux. Systèmes embarqués.",
+            "Pensée technique structurée.",
+            "",
+            "[2023–2026] BUT Informatique.",
+            "Architecture système.",
+            "Structuration de projet.",
+            "Contraintes réelles de production.",
+            "",
+            "[Processus parallèle] Photo & Vidéo.",
+            "Circuit Paul Ricard.",
+            "Rallye du Var.",
+            "Comprendre le mouvement et la lumière.",
+            "",
+            "[2023] Étalonnage.",
+            "Comprendre que la lumière est émotionnelle.",
+            "",
+            "[2024] HNC Studio.",
+            "La direction créative rencontre le design de systèmes.",
+            "",
+            "[2024] Nutrika.",
+            "Coaching nutritionnel contextuel assisté par IA.",
+            "",
+            "Statut système : évolution.",
+        ],
+        statusLine: "Statut système : évolution.",
+    },
+    en: {
+        clickableLines: {
+            "[2024] HNC Studio.": "hnc-studio",
+            "[2024] Nutrika.": "nutrika",
+        },
+        lines: [
+            "> Booting HNC OS...",
+            "> Accessing memory archive...",
+            "",
+            "[2012] First contact with computers.",
+            "Opening and rebuilding PCs with my father.",
+            "Understanding hardware before software.",
+            "",
+            "[2015] First HTML experiments.",
+            "Recreating websites.",
+            "Learning through tutorials.",
+            "Trial. Error. Curiosity.",
+            "",
+            "[2016] Bootloader experimentation.",
+            "Linux virtual machines.",
+            "Breaking systems to understand them.",
+            "",
+            "[2018] Blender.",
+            "Dream of creating video games.",
+            "From 3D models to 3D printing.",
+            "",
+            "[2021-2023] STI2D — SIN.",
+            "Networks. Embedded systems.",
+            "Structured technical thinking.",
+            "",
+            "[2023–2026] BUT Informatique.",
+            "System architecture.",
+            "Project structuring.",
+            "Real production constraints.",
+            "",
+            "[Parallel Process] Photography & Video.",
+            "Circuit Paul Ricard.",
+            "Rallye du Var.",
+            "Understanding motion and light.",
+            "",
+            "[2023] Color grading.",
+            "Realizing that light is emotional.",
+            "",
+            "[2024] HNC Studio.",
+            "Creative direction meets system design.",
+            "",
+            "[2024] Nutrika.",
+            "AI-powered contextual nutrition coaching.",
+            "",
+            "System status: evolving.",
+        ],
+        statusLine: "System status: evolving.",
+    },
+} as const;
 
 /* ─── Speed constants ─── */
 const NORMAL_CHAR_SPEED = 18; // ms per character
@@ -86,10 +139,18 @@ interface TerminalLogsProps {
 /* ─── Component ─── */
 
 export default function TerminalLogs({ onOpenWindow }: TerminalLogsProps) {
+    const { language } = useLanguage();
+    const logSet = LOGS[language];
+    const fullText = useMemo(() => logSet.lines.join("\n"), [logSet.lines]);
     const [charIndex, setCharIndex] = useState(0);
     const [isAccelerated, setIsAccelerated] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const isDone = charIndex >= fullText.length;
+
+    useEffect(() => {
+        setCharIndex(0);
+        setIsAccelerated(false);
+    }, [language]);
 
     /** Type characters one at a time */
     useEffect(() => {
@@ -150,14 +211,14 @@ export default function TerminalLogs({ onOpenWindow }: TerminalLogsProps) {
             }}
         >
             {visibleLines.map((line, i) => {
-                const targetId = CLICKABLE_LINES[line];
+                const targetId = logSet.clickableLines[line];
                 const isClickable = !!targetId && onOpenWindow;
 
                 return (
                     <div
                         key={i}
                         style={{
-                            ...getLineStyle(line),
+                            ...getLineStyle(line, logSet.statusLine),
                             ...(isClickable
                                 ? { cursor: "pointer", textDecoration: "underline", textDecorationColor: "rgba(255,255,255,0.3)", textUnderlineOffset: "3px" }
                                 : {}),
@@ -209,14 +270,14 @@ export default function TerminalLogs({ onOpenWindow }: TerminalLogsProps) {
 }
 
 /** Per-line styling based on content */
-function getLineStyle(line: string): React.CSSProperties {
+function getLineStyle(line: string, statusLine: string): React.CSSProperties {
     if (line.startsWith(">")) {
         return { color: "#a1a1aa" };
     }
     if (line.match(/^\[.+\]/)) {
         return { color: "#f4f4f5", fontWeight: 600, marginTop: 2 };
     }
-    if (line === "System status: evolving.") {
+    if (line === statusLine) {
         return {
             color: "#e4e4e7",
             fontWeight: 600,

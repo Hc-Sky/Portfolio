@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface BootLoaderProps {
     progress: number;
@@ -8,6 +9,8 @@ interface BootLoaderProps {
 }
 
 export default function BootLoader({ progress, showStarting }: BootLoaderProps) {
+    const { language } = useLanguage();
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -46,7 +49,7 @@ export default function BootLoader({ progress, showStarting }: BootLoaderProps) 
                     transition={{ duration: 0.1, ease: "linear" }}
                     className="text-white/50 text-[12px]"
                 >
-                    Starting…
+                    {language === "fr" ? "Démarrage…" : "Starting…"}
                 </motion.div>
             </div>
         </motion.div>

@@ -12,6 +12,7 @@ import Desktop from "@/components/Desktop";
 import DesktopOnly from "@/components/DesktopOnly";
 import BootLoader from "@/components/BootLoader";
 import useBootSequence from "@/hooks/useBootSequence";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const DESKTOP_BREAKPOINT = 1024;
 
@@ -38,27 +39,29 @@ export default function Home() {
     );
   }
 
-  if (!isDesktop) {
-    return <DesktopOnly />;
-  }
-
   return (
-    <>
-      <AnimatePresence>
-        {isBootVisible && (
-          <BootLoader progress={progress} showStarting={showStarting} />
-        )}
-      </AnimatePresence>
+    <LanguageProvider defaultLanguage="fr">
+      {!isDesktop ? (
+        <DesktopOnly />
+      ) : (
+        <>
+          <AnimatePresence>
+            {isBootVisible && (
+              <BootLoader progress={progress} showStarting={showStarting} />
+            )}
+          </AnimatePresence>
 
-      {isDesktopReady && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-        >
-          <Desktop />
-        </motion.div>
+          {isDesktopReady && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              <Desktop />
+            </motion.div>
+          )}
+        </>
       )}
-    </>
+    </LanguageProvider>
   );
 }

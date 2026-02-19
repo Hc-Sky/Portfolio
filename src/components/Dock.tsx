@@ -12,12 +12,14 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 /* ─── Types ─── */
 
 interface DockAppItem {
     id: string;
     label: string;
+    labelFr?: string;
     /** When set, the icon is interactive: opens a window, shows tooltip */
     windowId?: string;
     /** URL to the official macOS icon image */
@@ -43,93 +45,110 @@ const dockEntries: DockEntry[] = [
     {
         id: "finder",
         label: "Finder",
-        windowId: "about",
+        labelFr: "Finder",
+        windowId: "finder",
         iconUrl: "https://framerusercontent.com/images/wtQkw1jK0MlEDOrW0Q1kE5PBqc.png",
     },
     {
         id: "launchpad",
         label: "Launchpad",
+        labelFr: "Launchpad",
         iconUrl: "https://framerusercontent.com/images/KCaz69s4OvhKMUI25E1RBeuNIyA.png",
     },
     {
         id: "safari",
         label: "Safari",
+        labelFr: "Safari",
         iconUrl: "https://framerusercontent.com/images/qQISGOSSnz748TdrZn91l44R5u0.png",
     },
     // Interactive: opens "Contact" window (Messages → messaging)
     {
         id: "messages",
         label: "Messages",
+        labelFr: "Messages",
         windowId: "contact",
         iconUrl: "https://framerusercontent.com/images/fm90fwzWoBMCvK5C0MOyKdo94.png",
     },
     {
         id: "mail",
         label: "Mail",
+        labelFr: "Mail",
         iconUrl: "https://framerusercontent.com/images/CwKoPLck9kD8CifRkrpug3socM.png",
     },
     {
         id: "maps",
         label: "Maps",
+        labelFr: "Plans",
         iconUrl: "https://framerusercontent.com/images/YtLyrfz2kFN2QhkzBWG6TrATw.png",
     },
     // Interactive: opens "Nutrika" project (Photos → visual project showcase)
     {
         id: "photos",
         label: "Photos",
+        labelFr: "Photos",
         windowId: "nutrika",
         iconUrl: "https://framerusercontent.com/images/ogWIDEJmWxA8SVRZpEe7gk35FcM.png",
     },
     {
         id: "facetime",
         label: "FaceTime",
+        labelFr: "FaceTime",
         iconUrl: "https://framerusercontent.com/images/xxKf6tPzYecSWOavDJjUB0MtXw.png",
     },
     {
         id: "calendar",
         label: "Calendar",
+        labelFr: "Calendrier",
         iconUrl: "https://framerusercontent.com/images/VeljykK560qBRDkQkYyhx8ChI.png",
     },
     // Interactive: opens "HNC Studio" project (Contacts → creative network)
     {
         id: "contacts",
         label: "Contacts",
+        labelFr: "Contacts",
         windowId: "hnc-studio",
         iconUrl: "https://framerusercontent.com/images/gi6dMq8dbjba0LyjZSuySu4X6zg.png",
     },
     {
         id: "reminders",
         label: "Reminders",
+        labelFr: "Rappels",
         iconUrl: "https://framerusercontent.com/images/NMuItXJj2OKiPiAC2EdivhRPYY.png",
     },
     {
         id: "notes",
         label: "Notes",
+        labelFr: "Notes",
         iconUrl: "https://framerusercontent.com/images/Z0d1XNe7wVINUiHydSL6noKho.png",
     },
     {
         id: "tv",
         label: "TV",
+        labelFr: "TV",
         iconUrl: "https://framerusercontent.com/images/1pORyCnfgAxpXWyCa1l7s8IJeK0.png",
     },
     {
         id: "music",
         label: "Music",
+        labelFr: "Musique",
         iconUrl: "https://framerusercontent.com/images/pjjxP6KY1Ttnqhuqt9oF3QBfmE.png",
     },
     {
         id: "podcasts",
         label: "Podcasts",
+        labelFr: "Podcasts",
         iconUrl: "https://framerusercontent.com/images/y6Unx5f6vZ4SwFJ4bnDpnejmKM.png",
     },
     {
         id: "appstore",
         label: "App Store",
+        labelFr: "App Store",
         iconUrl: "https://framerusercontent.com/images/mjYHu1WKSujuvzAuskfVJSx2w.png",
     },
     {
         id: "settings",
         label: "System Settings",
+        labelFr: "Réglages",
         iconUrl: "https://framerusercontent.com/images/VbY44vBZlQp4srNQK6ohxpco.png",
     },
 
@@ -142,6 +161,7 @@ const dockEntries: DockEntry[] = [
     {
         id: "downloads",
         label: "Downloads",
+        labelFr: "Téléchargements",
         windowId: "resume",
         iconUrl: "https://framerusercontent.com/images/XYN0Nl9HILu4c0bzhEPmjha0Cg.png",
     },
@@ -149,6 +169,7 @@ const dockEntries: DockEntry[] = [
     {
         id: "spotify",
         label: "Spotify",
+        labelFr: "Spotify",
         windowId: "kakouquest",
         iconUrl: "https://framerusercontent.com/images/lwNP7fGxNGl6VSwvqD3AorA1h0.png",
     },
@@ -249,8 +270,10 @@ function DockIcon({
     onOpenWindow: (windowId: string) => void;
     onRestoreWindow: (windowId: string) => void;
 }) {
+    const { language } = useLanguage();
     const ref = useRef<HTMLButtonElement>(null);
     const [showTooltip, setShowTooltip] = useState(false);
+    const label = language === "fr" && item.labelFr ? item.labelFr : item.label;
 
     // Distance from mouse to center of this icon
     const distance = useTransform(mouseX, (val: number) => {
@@ -291,7 +314,7 @@ function DockIcon({
                     className="absolute -top-9 px-2.5 py-1 rounded-md text-[11px] font-medium
             bg-white text-gray-900 whitespace-nowrap z-50 shadow-[0_6px_20px_rgba(0,0,0,0.15)] border border-gray-200"
                 >
-                    {item.label}
+                    {label}
                     <div
                         className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2
               bg-white rotate-45 border border-gray-200"
@@ -309,12 +332,12 @@ function DockIcon({
           transition-shadow duration-150
           focus:outline-none 
           ${item.windowId || item.id === "safari" ? "cursor-pointer hover:shadow-lg" : "cursor-default"}`}
-                aria-label={item.label}
+                aria-label={label}
             >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                     src={item.iconUrl}
-                    alt={item.label}
+                    alt={label}
                     className="w-full h-full rounded-xl object-contain pointer-events-none"
                     draggable={false}
                 />

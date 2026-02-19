@@ -12,6 +12,8 @@
 
 export type DesktopItemType = "folder" | "file" | "terminal" | "trash";
 
+export type Language = "fr" | "en";
+
 export type WindowContentType =
     | "project"
     | "resume"
@@ -54,11 +56,37 @@ export interface DesktopItem {
     window: WindowConfig;
 }
 
+/* ─── Finder Window (Dock-only) ─── */
+const finderWindowEn: WindowConfig = {
+    title: "Finder",
+    contentType: "project",
+    sections: [
+        {
+            heading: "Projects",
+            body: "Select a project in the sidebar to explore details, files, and case studies.",
+        },
+    ],
+};
+
+const finderWindowFr: WindowConfig = {
+    title: "Finder",
+    contentType: "project",
+    sections: [
+        {
+            heading: "Projets",
+            body: "Sélectionne un projet dans la barre latérale pour explorer les détails, fichiers et études de cas.",
+        },
+    ],
+};
+
+export const getFinderWindow = (language: Language) =>
+    language === "fr" ? finderWindowFr : finderWindowEn;
+
 /* ═══════════════════════════════════════════════════════════
    DESKTOP ITEMS
    ═══════════════════════════════════════════════════════════ */
 
-export const desktopItems: DesktopItem[] = [
+const desktopItemsEn: DesktopItem[] = [
     /* ─── Top-left — Narrative entry point ─── */
     {
         id: "system-logs",
@@ -120,8 +148,12 @@ export const desktopItems: DesktopItem[] = [
                     heading: "Why It Matters",
                     body: "Nutrika reflects my interest in transforming chaos into structure — and designing systems that assist real decisions.",
                 },
+                {
+                    heading: "Presentation",
+                    body: "https://www.canva.com/design/DAG2VFv3Pd0/PVODIpzZ5xgj2N2w9dtGxA/edit?utm_content=DAG2VFv3Pd0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton",
+                },
             ],
-            caseStudyUrl: "/p/nutrika",
+            caseStudyUrl: "https://www.hackster.io/542656/nutrika-5ff838#toc-r-duisez-le-gaspillage-alimentaire--optimisez-votre-nutrition-et-connectez-votre-cuisine---l--re-de-l-iot-1",
         },
     },
 
@@ -160,7 +192,7 @@ export const desktopItems: DesktopItem[] = [
                     body: "HNC reflects my desire to merge artistic direction with technical architecture.",
                 },
             ],
-            caseStudyUrl: "/p/hnc-studio",
+            caseStudyUrl: "https://hnc-studio.fr/",
         },
     },
 
@@ -237,7 +269,7 @@ export const desktopItems: DesktopItem[] = [
                     body: "",
                 },
             ],
-            caseStudyUrl: "/p/gameonweb",
+            caseStudyUrl: "https://fabyan09.github.io/gamesonweb/",
         },
     },
 
@@ -294,7 +326,7 @@ export const desktopItems: DesktopItem[] = [
                     */
                 },
             ],
-            caseStudyUrl: "/p/kakouquest",
+            caseStudyUrl: "https://github.com/Hc-Sky/SAE-Rogue-Like",
         },
     },
 
@@ -323,6 +355,259 @@ export const desktopItems: DesktopItem[] = [
     },
 ];
 
+const desktopItemsFr: DesktopItem[] = [
+    /* ─── Top-left — Narrative entry point ─── */
+    {
+        id: "system-logs",
+        label: "SystemLogs.app",
+        type: "terminal",
+        position: { x: 6, y: 60 },
+        window: {
+            title: "SystemLogs",
+            contentType: "terminal",
+        },
+    },
+
+    /* ─── Mid-left — Personal intro ─── */
+    {
+        id: "readme",
+        label: "README.md",
+        type: "file",
+        position: { x: 6, y: 78 },
+        window: {
+            title: "README.md",
+            contentType: "readme",
+        },
+    },
+
+    /* ─── Right column — Projects ─── */
+
+    // 1. Nutrika — vision intelligente
+    {
+        id: "nutrika",
+        label: "Nutrika.app",
+        type: "folder",
+        position: { x: 88, y: 8 },
+        window: {
+            title: "Nutrika",
+            contentType: "project",
+            sections: [
+                {
+                    heading: "Contexte",
+                    body: "Nutrika est partie d’une observation simple : on sait souvent ce qu’on a dans le frigo, mais pas quoi en faire.",
+                },
+                {
+                    heading: "Problème",
+                    body: "Les recettes en ligne sont déconnectées des contraintes réelles. Comment générer des suggestions de repas structurées et saines selon les ingrédients disponibles, les objectifs alimentaires et les macros ?",
+                },
+                {
+                    heading: "Mon rôle",
+                    body: "Conception produit, architecture du système IA, logique de parsing d’ingrédients, structuration UX, et modèle d’évaluation nutritionnelle.",
+                },
+                {
+                    heading: "Approche technique",
+                    body: "Backend Python avec agents IA pour l’extraction structurée. Calcul des macronutriments et système de recommandation contextuelle.",
+                },
+                {
+                    heading: "Ce que j’ai appris",
+                    body: "L’IA n’est pas impressionnante seule. Le vrai défi est de concevoir l’intelligence autour de l’utilisateur.",
+                },
+                {
+                    heading: "Pourquoi c’est important",
+                    body: "Nutrika reflète mon intérêt pour transformer le chaos en structure — et concevoir des systèmes qui assistent de vraies décisions.",
+                },
+                {
+                    heading: "Présentation",
+                    body: "https://www.canva.com/design/DAG2VFv3Pd0/PVODIpzZ5xgj2N2w9dtGxA/edit?utm_content=DAG2VFv3Pd0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton",
+                },
+            ],
+            caseStudyUrl: "https://www.hackster.io/542656/nutrika-5ff838#toc-r-duisez-le-gaspillage-alimentaire--optimisez-votre-nutrition-et-connectez-votre-cuisine---l--re-de-l-iot-1",
+        },
+    },
+
+    // 2. HNC Studio — vision produit + structure
+    {
+        id: "hnc-studio",
+        label: "HNCStudio.app",
+        type: "folder",
+        position: { x: 88, y: 24 },
+        window: {
+            title: "HNC Studio",
+            contentType: "project",
+            sections: [
+                {
+                    heading: "Contexte",
+                    body: "HNC Studio a commencé comme une initiative créative. Elle a évolué en écosystème structuré.",
+                },
+                {
+                    heading: "Problème",
+                    body: "Les projets créatifs deviennent chaotiques sans structure : clients, deals, shootings, livrables, facturation. La plupart empilent des outils. J’ai choisi de concevoir mon propre système.",
+                },
+                {
+                    heading: "Mon rôle",
+                    body: "Fondateur, direction créative, développement web, motion design, architecture ERP.",
+                },
+                {
+                    heading: "Approche technique",
+                    body: "Next.js + Tailwind + Framer Motion. Logique ERP modulaire avec workflow « Golden Path » : Client → Deal → Projet → Tâches → Livraison → Facture.",
+                },
+                {
+                    heading: "Ce que j’ai appris",
+                    body: "La créativité sans structure s’effondre. La structure sans créativité stagne. L’équilibre se conçoit.",
+                },
+                {
+                    heading: "Pourquoi c’est important",
+                    body: "HNC reflète mon envie de fusionner direction artistique et architecture technique.",
+                },
+            ],
+            caseStudyUrl: "https://hnc-studio.fr/",
+        },
+    },
+
+    // 3. Referentiel — maturité pro
+    {
+        id: "referentiel",
+        label: "Referentiel.app",
+        type: "folder",
+        position: { x: 88, y: 40 },
+        window: {
+            title: "Référentiel",
+            contentType: "project",
+            sections: [
+                {
+                    heading: "Contexte",
+                    body: "Développé durant mon alternance chez Cash Systèmes Industrie. Objectif : centraliser la logique produit et workflow interne.",
+                },
+                {
+                    heading: "Problème",
+                    body: "Flux de données déconnectés. Manque de visibilité de suivi. Besoin d’états structurés et de transitions.",
+                },
+                {
+                    heading: "Mon rôle",
+                    body: "Architecture backend, modélisation workflow MongoDB, logique de gestion d’état, intégration dans l’écosystème existant.",
+                },
+                {
+                    heading: "Approche technique",
+                    body: "Spring Boot, Spring Data MongoDB. États de workflow en JSON et structure événementielle.",
+                },
+                {
+                    heading: "Ce que j’ai appris",
+                    body: "Les systèmes réels impliquent des contraintes réelles. L’architecture impacte les personnes, pas seulement le code.",
+                },
+                {
+                    heading: "Pourquoi c’est important",
+                    body: "Ce projet a fait évoluer mon mindset : du développement de features vers le design de systèmes.",
+                },
+            ],
+        },
+    },
+
+    // 4. GameOnWeb — interaction
+    {
+        id: "gameonweb",
+        label: "GameOnWeb.app",
+        type: "folder",
+        position: { x: 88, y: 56 },
+        window: {
+            title: "GameOnWeb",
+            contentType: "project",
+            sections: [
+                {
+                    heading: "Contexte",
+                    body: "Exploration de l’interaction 3D directement dans le navigateur.",
+                },
+                {
+                    heading: "Problème",
+                    body: "Comment créer une interaction spatiale dans un médium traditionnellement plat ?",
+                },
+                {
+                    heading: "Mon rôle",
+                    body: "Mise en place de la scène, logique d’interaction, gestion de la caméra, boucles d’animation.",
+                },
+                {
+                    heading: "Approche technique",
+                    body: "Three.js, WebGL. Rendu temps réel et contrôles interactifs.",
+                },
+                {
+                    heading: "Ce que j’ai appris",
+                    body: "L’interaction web évolue au-delà des interfaces statiques. L’espace change la perception.",
+                },
+                {
+                    heading: "Pourquoi c’est important",
+                    body: "",
+                },
+            ],
+            caseStudyUrl: "https://fabyan09.github.io/gamesonweb/",
+        },
+    },
+
+    // 5. KakouQuest — base académique
+    {
+        id: "kakouquest",
+        label: "KakouQuest.app",
+        type: "folder",
+        position: { x: 88, y: 72 },
+        window: {
+            title: "KakouQuest",
+            contentType: "project",
+            sections: [
+                {
+                    heading: "Contexte",
+                    body: "Projet académique de première année. Objectif : créer un jeu jouable en Java.",
+                },
+                {
+                    heading: "Problème",
+                    body: "Gérer l’architecture orientée objet, la boucle de jeu et la gestion d’état.",
+                },
+                {
+                    heading: "Mon rôle",
+                    body: "Mécaniques de gameplay, système de personnage, logique d’interaction.",
+                },
+                {
+                    heading: "Approche technique",
+                    body: "Principes POO Java, gestion de l’état de jeu.",
+                },
+                {
+                    heading: "Ce que j’ai appris",
+                    body: "La structure précède la complexité. L’architecture détermine la scalabilité.",
+                },
+                {
+                    heading: "Pourquoi c’est important",
+                    body: "",
+                },
+            ],
+            caseStudyUrl: "https://github.com/Hc-Sky/SAE-Rogue-Like",
+        },
+    },
+
+    /* ─── Bottom center — Technical stack ─── */
+    {
+        id: "core-modules",
+        label: "CoreModules.app",
+        type: "folder",
+        position: { x: 45, y: 76 },
+        window: {
+            title: "CoreModules",
+            contentType: "core-modules",
+        },
+    },
+
+    /* ─── Bottom right — Trash (Easter egg) ─── */
+    {
+        id: "trash",
+        label: "Corbeille",
+        type: "trash",
+        position: { x: 92, y: 88 },
+        window: {
+            title: "Corbeille",
+            contentType: "trash-content",
+        },
+    },
+];
+
+export const getDesktopItems = (language: Language) =>
+    language === "fr" ? desktopItemsFr : desktopItemsEn;
+
 /* ═══════════════════════════════════════════════════════════
    DOCK & VIRTUAL WINDOWS
    ═══════════════════════════════════════════════════════════ */
@@ -345,7 +630,15 @@ export const dockItems: DockItem[] = [
 ];
 
 /** Virtual item for "Contact" — not a desktop icon but openable from TopBar/Dock */
-export const contactWindow: WindowConfig = {
+const contactWindowEn: WindowConfig = {
     title: "Contact",
     contentType: "contact",
 };
+
+const contactWindowFr: WindowConfig = {
+    title: "Contact",
+    contentType: "contact",
+};
+
+export const getContactWindow = (language: Language) =>
+    language === "fr" ? contactWindowFr : contactWindowEn;
