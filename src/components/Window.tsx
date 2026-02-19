@@ -72,7 +72,11 @@ export default function Window({
             dragElastic={0.05}
             dragConstraints={constraintsRef} // Confine to desktop
             /* ─── Window Management ─── */
-            onPointerDown={onFocus}
+            onPointerDown={(e) => {
+                e.stopPropagation();
+                onFocus();
+            }}
+            onMouseDown={(e) => e.stopPropagation()}
             style={{
                 position: "absolute",
                 zIndex,
@@ -92,6 +96,7 @@ export default function Window({
                     className="h-10 px-4 flex items-center justify-between bg-gray-100/50
              border-b border-gray-200/50 cursor-grab active:cursor-grabbing select-none"
                     onPointerDown={(e) => {
+                        e.stopPropagation();
                         dragControls.start(e);
                         onFocus();
                     }}
