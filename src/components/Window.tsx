@@ -14,7 +14,7 @@ import type { WindowConfig, ProjectSection, ProjectBullet } from "@/data/desktop
 import TerminalLogs from "./TerminalLogs";
 import FinderLayout from "./FinderLayout";
 
-const WINDOW_WIDTH = 620;
+const WINDOW_WIDTH = 560;
 
 interface WindowProps {
     windowId: string;
@@ -77,7 +77,7 @@ export default function Window({
                 position: "absolute",
                 zIndex,
                 width: WINDOW_WIDTH,
-                top: "15%", // Initial Y position (relative)
+                top: "10%", // Initial Y position (relative)
                 left: `calc(50% - ${WINDOW_WIDTH / 2}px)`, // Centered X
                 boxShadow: isFocused
                     ? "0 25px 50px -12px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0,0,0,0.05)"
@@ -260,35 +260,148 @@ function ReadmeContent() {
 
 /* ─── CoreModules Content ─── */
 function CoreModulesContent() {
-    const modules = [
-        { name: "System Thinking", desc: "Designing structures before surfaces." },
-        { name: "Visual Direction", desc: "Light as emotion. Composition as narrative." },
-        { name: "Creative Development", desc: "Code as interactive medium." },
-        { name: "AI & Automation", desc: "Structuring intelligence around users." },
-        { name: "Project Architecture", desc: "From idea to delivery, through constraints." },
-        { name: "Motion & Energy", desc: "Capturing intensity through timing and framing." },
+    const technicalStack = [
+        {
+            title: "IDE & Tools",
+            items: ["IntelliJ IDEA", "WebStorm", "Rider", "PyCharm", "VS Code"],
+        },
+        {
+            title: "Programming Languages",
+            items: ["Java", "C#", "Python", "JavaScript", "TypeScript", "C++"],
+        },
+        {
+            title: "Web & Frameworks",
+            items: ["Vue.js", "Express.js", "Spring"],
+        },
+        {
+            title: "Databases & DevOps",
+            items: ["MySQL", "MongoDB", "Docker", "VMware", "Linux", "Windows"],
+        },
+    ];
+
+    const leadershipSkills = [
+        "Problem-solving",
+        "Team collaboration",
+        "Effective communication",
+        "Time management",
+        "Adaptability",
+        "Continuous learning",
+        "Leadership in projects (SAE, alternance)",
+    ];
+
+    const softSkills = [
+        "Full project lifecycle: concept to deployment",
+        "Backend engineering with Java & Spring",
+        "Frontend experience with Vue.js",
+        "DevOps tooling and environments (Docker, VM)",
+        "Game development workflow exposure (Unity)",
+    ];
+
+    const experiences = [
+        {
+            title: "Alternance @ CSI (Cash Systèmes Industrie)",
+            desc: "Workflow integration, refactor and maintenance on MongoDB/Java stack.",
+        },
+        {
+            title: "SAE – Studio Kakou (RTS Java game)",
+            desc: "Multiplayer strategy game with backlog, sprints, Trello and Git.",
+        },
+        {
+            title: "TP IA & Jeux (Ms. PacMan)",
+            desc: "Neural networks with Encog, resilient propagation, agent benchmarking.",
+        },
+        {
+            title: "SAE Réseau & Docker",
+            desc: "Microservices deployment, NAT/iptables in VMs and containers.",
+        },
+        {
+            title: "SAE Gestion de Projet",
+            desc: "Specs writing, planning, retrospectives, and team follow-up.",
+        },
     ];
 
     return (
-        <div className="space-y-5">
-            <div className="flex items-center gap-3 border-b border-gray-100 pb-3">
-                <div className="w-10 h-10 bg-gray-900 rounded flex items-center justify-center text-white text-xl">
-                    🧠
+        <div className="!space-y-3 px-6 py-6">
+            <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
+                <div className="w-10 h-10 bg-gray-100 border border-gray-200 rounded-lg flex items-center justify-center text-gray-900">
+                    <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path d="M4 7.5h16" />
+                        <path d="M4 12h16" />
+                        <path d="M4 16.5h16" />
+                    </svg>
                 </div>
                 <div>
-                    <h2 className="text-base font-bold text-gray-900">Core Modules</h2>
-                    <p className="text-xs text-gray-500">Active Competencies</p>
+                    <h2 className="text-[15px] font-semibold text-gray-900">CoreModules.app</h2>
+                    <p className="text-[12px] text-gray-500">Personal Architecture Overview</p>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-3">
-                {modules.map((mod) => (
-                    <div key={mod.name} className="p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
-                        <h3 className="text-sm font-semibold text-gray-800 mb-1">{mod.name}</h3>
-                        <p className="text-xs text-gray-600">{mod.desc}</p>
-                    </div>
-                ))}
-            </div>
+            <section className="space-y-3 rounded-xl bg-gray-50/70 border border-gray-100 p-4">
+                <h3 className="text-[11px] font-semibold uppercase tracking-widest text-gray-400">Technical Stack</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                    {technicalStack.map((group) => (
+                        <div key={group.title} className="space-y-2">
+                            <h4 className="text-[12px] font-semibold text-gray-700">{group.title}</h4>
+                            <div className="flex flex-wrap gap-2">
+                                {group.items.map((item) => (
+                                    <span
+                                        key={item}
+                                        className="px-2.5 py-1 rounded-full bg-white border border-gray-200 text-[11px] text-gray-700 shadow-[0_1px_0_rgba(0,0,0,0.04)]"
+                                    >
+                                        {item}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            <section className="space-y-3 rounded-xl bg-gray-50/70 border border-gray-100 p-4">
+                <h3 className="text-[11px] font-semibold uppercase tracking-widest text-gray-400">Soft Skills</h3>
+                <ul className="text-[12px] text-gray-600 space-y-1">
+                    {leadershipSkills.map((item) => (
+                        <li key={item} className="flex items-center gap-2">
+                            <span className="w-1 h-1 rounded-full bg-gray-400" />
+                            <span>{item}</span>
+                        </li>
+                    ))}
+                </ul>
+            </section>
+
+            <section className="space-y-3 rounded-xl bg-gray-50/70 border border-gray-100 p-4">
+                <h3 className="text-[11px] font-semibold uppercase tracking-widest text-gray-400">Core Focus</h3>
+                <ul className="text-[12px] text-gray-600 space-y-1">
+                    {softSkills.map((item) => (
+                        <li key={item} className="flex items-center gap-2">
+                            <span className="w-1 h-1 rounded-full bg-gray-400" />
+                            <span>{item}</span>
+                        </li>
+                    ))}
+                </ul>
+            </section>
+
+            <section className="space-y-3 rounded-xl bg-gray-50/70 border border-gray-100 p-4">
+                <h3 className="text-[11px] font-semibold uppercase tracking-widest text-gray-400">Projects & Experiences</h3>
+                <div className="space-y-3">
+                    {experiences.map((exp) => (
+                        <div key={exp.title} className="text-[12px] text-gray-600">
+                            <div className="font-semibold text-gray-700">{exp.title}</div>
+                            <div className="text-gray-500 leading-relaxed">{exp.desc}</div>
+                        </div>
+                    ))}
+                </div>
+            </section>
         </div>
     );
 }

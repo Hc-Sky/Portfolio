@@ -183,13 +183,13 @@ export default function Dock({
             transition={{ delay: 0.5, duration: 0.5, ease: "easeOut" }}
             onMouseMove={(e) => mouseX.set(e.pageX)}
             onMouseLeave={() => mouseX.set(Infinity)}
-            className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50"
+            className="fixed bottom-3 left-1/2 -translate-x-1/2 z-50"
         >
             {/* Dock shell — fixed height glassmorphism background */}
             <div
-                className="rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/15
-          shadow-[0_8px_32px_rgba(0,0,0,0.25)]
-          flex items-end px-8 pb-2 overflow-visible"
+                    className="rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/15
+                shadow-[0_8px_32px_rgba(0,0,0,0.25)]
+                flex items-end px-6 pb-1 overflow-visible"
                 style={{ height: BASE_ICON_SIZE + 8 }}
             >
                 {/* Icons grow upward beyond the shell on hover via overflow-visible */}
@@ -266,10 +266,13 @@ function DockIcon({
     );
     const width = useSpring(widthSync, { mass: 0.1, stiffness: 200, damping: 15 });
 
-    const isClickable = !!item.windowId;
 
     /** Click handler: restore if minimized, otherwise open */
     const handleClick = () => {
+        if (item.id === "safari") {
+            window.open("https://github.com/Hc-Sky", "_blank", "noopener,noreferrer");
+            return;
+        }
         if (!item.windowId) return;
         if (isMinimized) {
             onRestoreWindow(item.windowId);
@@ -281,17 +284,17 @@ function DockIcon({
     return (
         <div className="relative flex flex-col items-center">
             {/* Tooltip — only for interactive icons */}
-            {showTooltip && isClickable && (
+            {showTooltip && (
                 <motion.div
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="absolute -top-9 px-2.5 py-1 rounded-md text-[11px] font-medium
-            bg-gray-900/90 text-white whitespace-nowrap z-50 shadow-sm"
+            bg-white text-gray-900 whitespace-nowrap z-50 shadow-[0_6px_20px_rgba(0,0,0,0.15)] border border-gray-200"
                 >
                     {item.label}
                     <div
                         className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2
-              bg-gray-900/90 rotate-45"
+              bg-white rotate-45 border border-gray-200"
                     />
                 </motion.div>
             )}
@@ -305,7 +308,7 @@ function DockIcon({
                 className={`flex items-center justify-center rounded-xl select-none
           transition-shadow duration-150
           focus:outline-none 
-          ${isClickable ? "cursor-pointer hover:shadow-lg" : "cursor-default"}`}
+          ${item.windowId || item.id === "safari" ? "cursor-pointer hover:shadow-lg" : "cursor-default"}`}
                 aria-label={item.label}
             >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
