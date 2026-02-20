@@ -13,7 +13,7 @@ import {
 
 /* ─── Virtual File System Types ─── */
 
-type FileType = "folder" | "file" | "link";
+type FileType = "folder" | "file" | "link" | "image";
 
 interface VirtualFile {
     id: string;
@@ -25,10 +25,99 @@ interface VirtualFile {
     meta?: string; // e.g., "4 KB"
 }
 
+const PROJECT_RESOURCE_FILES: Record<string, string[]> = {
+    nutrika: ["nutrika.png"],
+    "hnc-studio": ["hnc_logo.svg"],
+    referentiel: [],
+    gameonweb: ["gameplay.png", "screen.png"],
+    kakouquest: ["gameplay.png"],
+};
+
+function renderInlineWithLinks(text: string) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+
+    return parts.map((part, index) => {
+        if (!part) return null;
+        if (urlRegex.test(part)) {
+            return (
+                <a
+                    key={`${part}-${index}`}
+                    href={part}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-700 underline underline-offset-2 break-all"
+                >
+                    {part}
+                </a>
+            );
+        }
+        return <React.Fragment key={`${part}-${index}`}>{part}</React.Fragment>;
+    });
+}
+
+function renderMarkdownLike(content: string) {
+    const lines = content.split("\n");
+
+    return (
+        <div className="space-y-3">
+            {lines.map((line, index) => {
+                const trimmedLine = line.trim();
+
+                if (!trimmedLine) {
+                    return <div key={`spacer-${index}`} className="h-1" />;
+                }
+
+                if (trimmedLine.startsWith("# ")) {
+                    return (
+                        <h3
+                            key={`h1-${index}`}
+                            className="text-[16px] font-semibold text-gray-900 mt-3 first:mt-0"
+                        >
+                            {renderInlineWithLinks(trimmedLine.replace(/^#\s+/, ""))}
+                        </h3>
+                    );
+                }
+
+                if (trimmedLine.startsWith("## ")) {
+                    return (
+                        <h4
+                            key={`h2-${index}`}
+                            className="text-[14px] font-semibold text-gray-800 mt-2"
+                        >
+                            {renderInlineWithLinks(trimmedLine.replace(/^##\s+/, ""))}
+                        </h4>
+                    );
+                }
+
+                if (trimmedLine.startsWith("- ") || trimmedLine.startsWith("* ")) {
+                    return (
+                        <p key={`li-${index}`} className="text-[13px] leading-6 text-gray-700 pl-4 relative">
+                            <span className="absolute left-0 top-[9px] w-1 h-1 rounded-full bg-gray-400" />
+                            {renderInlineWithLinks(trimmedLine.replace(/^[-*]\s+/, ""))}
+                        </p>
+                    );
+                }
+
+                return (
+                    <p key={`p-${index}`} className="text-[13px] leading-6 text-gray-700">
+                        {renderInlineWithLinks(trimmedLine)}
+                    </p>
+                );
+            })}
+        </div>
+    );
+}
+
 /* ─── Helper: Generate Files from Config ─── */
 
-function generateVirtualFiles(config: WindowConfig, language: "fr" | "en"): VirtualFile[] {
+function generateVirtualFiles(
+    config: WindowConfig,
+    language: "fr" | "en",
+    projectId?: string,
+): VirtualFile[] {
     const files: VirtualFile[] = [];
+    const resourceFiles = projectId ? PROJECT_RESOURCE_FILES[projectId] ?? [] : [];
 
     // 1. README.md (The main content)
     if (config.sections && config.sections.length > 0) {
@@ -53,14 +142,14 @@ function generateVirtualFiles(config: WindowConfig, language: "fr" | "en"): Virt
         });
     }
 
-    // 2. Case Study Link
+    // 2. Project Link
     if (config.caseStudyUrl) {
         files.push({
             id: "casestudy",
             name:
                 language === "fr"
-                    ? "Étude de cas complète.webloc"
-                    : "Full Case Study.webloc",
+                    ? "Voir le projet.webloc"
+                    : "View Project.webloc",
             type: "link",
             url: config.caseStudyUrl,
             meta: language === "fr" ? "Lien web" : "Web Link",
@@ -72,10 +161,24 @@ function generateVirtualFiles(config: WindowConfig, language: "fr" | "en"): Virt
         id: "assets",
         name: language === "fr" ? "Ressources" : "Assets",
         type: "folder",
-        meta: language === "fr" ? "4 éléments" : "4 items",
+        meta:
+            language === "fr"
+                ? `${resourceFiles.length} élément${resourceFiles.length > 1 ? "s" : ""}`
+                : `${resourceFiles.length} item${resourceFiles.length > 1 ? "s" : ""}`,
     });
 
-    // 4. Specs.json (Technical details)
+    // 4. Image assets from /public/resources/projects/<projectId>
+    resourceFiles.forEach((fileName, index) => {
+        files.push({
+            id: `resource-${index}`,
+            name: fileName,
+            type: "image",
+            url: `/resources/projects/${projectId}/${fileName}`,
+            meta: language === "fr" ? "Image" : "Image",
+        });
+    });
+
+    // 5. Specs.json (Technical details)
     if (config.bullets) {
         const jsonContent = JSON.stringify(
             config.bullets.reduce((acc, curr) => ({ ...acc, [curr.label]: curr.value }), {}),
@@ -94,10 +197,15 @@ function generateVirtualFiles(config: WindowConfig, language: "fr" | "en"): Virt
     return files;
 }
 
+function getProjectOrder(item: DesktopItem) {
+    return item.position.y * 1000 + item.position.x;
+}
+
 /* ─── Components ─── */
 
 interface FinderLayoutProps {
     config: WindowConfig;
+    projectId?: string;
     onOpenWindow?: (id: string) => void;
     onClose?: () => void;
     onMinimize?: () => void;
@@ -107,6 +215,7 @@ interface FinderLayoutProps {
 
 export default function FinderLayout({
     config,
+    projectId,
     onOpenWindow,
     onClose,
     onMinimize,
@@ -115,6 +224,7 @@ export default function FinderLayout({
 }: FinderLayoutProps) {
     const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
     const [openedFile, setOpenedFile] = useState<VirtualFile | null>(null);
+    const [activeProjectId, setActiveProjectId] = useState<string | undefined>(projectId);
     const { language } = useLanguage();
     const desktopItems = getDesktopItems(language);
 
@@ -124,7 +234,8 @@ export default function FinderLayout({
     // Sync state if prop changes (e.g. window reused)
     React.useEffect(() => {
         setActiveConfig(config);
-    }, [config]);
+        setActiveProjectId(projectId);
+    }, [config, projectId]);
 
     // Handle Sidebar Navigation (In-place)
     const handleNavigate = (id: string) => {
@@ -132,6 +243,7 @@ export default function FinderLayout({
         if (targetItem && targetItem.window) {
             // Update current window content
             setActiveConfig(targetItem.window);
+            setActiveProjectId(targetItem.id);
             setSelectedFileId(null);
             setOpenedFile(null);
         } else {
@@ -142,8 +254,8 @@ export default function FinderLayout({
 
     // Generate files for current view
     const files = useMemo(
-        () => generateVirtualFiles(activeConfig, language),
-        [activeConfig, language],
+        () => generateVirtualFiles(activeConfig, language, activeProjectId),
+        [activeConfig, language, activeProjectId],
     );
 
     // Handle File Double Click
@@ -163,6 +275,7 @@ export default function FinderLayout({
         return (
             <FilePreview
                 file={openedFile}
+                projectTitle={activeConfig.title}
                 onBack={() => setOpenedFile(null)}
                 dragControls={dragControls}
                 onClose={onClose}
@@ -211,7 +324,7 @@ export default function FinderLayout({
                 </div>
 
                 {/* Grid Area */}
-                <div className="flex-1 !px-6 !py-6 grid grid-cols-4 gap-y-8 gap-x-6 content-start overflow-y-auto"
+                <div className="flex-1 !px-6 !py-6 grid grid-cols-3 gap-y-7 gap-x-5 content-start overflow-y-auto"
                     onClick={() => setSelectedFileId(null)} // Deselect on bg click
                 >
                     {files.map((file) => (
@@ -252,9 +365,9 @@ function FinderSidebar({
     const { language } = useLanguage();
     const desktopItems = getDesktopItems(language);
     // Filter only projects for the "Locations" list
-    const projects = desktopItems.filter((item: DesktopItem) =>
-        item.window.contentType === "project" && item.id !== "trash"
-    );
+    const projects = desktopItems
+        .filter((item: DesktopItem) => item.window.contentType === "project" && item.id !== "trash")
+        .sort((a, b) => getProjectOrder(a) - getProjectOrder(b));
 
     return (
         <div className="w-[240px] flex flex-col bg-gray-50/90 backdrop-blur-3xl text-gray-600 border-r border-gray-200/50 rounded-tl-xl rounded-bl-xl">
@@ -360,6 +473,19 @@ function FileIcon({ file, selected, onSelect, onOpen }: { file: VirtualFile; sel
         if (file.type === "folder") return <IconFolder size={64} className="mb-1" />; // Assets
         if (file.name.endsWith(".md")) return <IconFileText size={58} className="mb-1" />; // Readme
         if (file.type === "link") return <IconFileWeb size={58} className="mb-1" />; // Web
+        if (file.type === "image" && file.url) {
+            return (
+                <div className="w-[58px] h-[58px] rounded-md overflow-hidden border border-gray-200 shadow-sm mb-1 bg-white">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src={file.url}
+                        alt={file.name}
+                        className="w-full h-full object-cover pointer-events-none"
+                        draggable={false}
+                    />
+                </div>
+            );
+        }
         if (file.name.endsWith(".json")) return <IconFileJson size={58} className="mb-1" />; // JSON
         return <div className="w-14 h-16 bg-gray-200 rounded"></div>;
     };
@@ -383,8 +509,10 @@ function FileIcon({ file, selected, onSelect, onOpen }: { file: VirtualFile; sel
     );
 }
 
-function FilePreview({ file, onBack, dragControls, onFocus, onClose, onMinimize }: { file: VirtualFile; onBack: () => void; dragControls?: DragControls; onFocus?: () => void; onClose?: () => void; onMinimize?: () => void }) {
+function FilePreview({ file, projectTitle, onBack, dragControls, onFocus, onClose, onMinimize }: { file: VirtualFile; projectTitle?: string; onBack: () => void; dragControls?: DragControls; onFocus?: () => void; onClose?: () => void; onMinimize?: () => void }) {
     const { language } = useLanguage();
+    const isHncReadme = projectTitle === "HNC Studio" && file.name.endsWith(".md");
+    const isReadmeFile = file.name.endsWith(".md");
     // Default: Text Editor View (Markdown or JSON)
     return (
         <div className="flex flex-col h-full bg-white relative rounded-xl overflow-hidden shadow-2xl">
@@ -413,7 +541,17 @@ function FilePreview({ file, onBack, dragControls, onFocus, onClose, onMinimize 
                 </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 font-mono text-[13px] leading-relaxed bg-white text-gray-800 whitespace-pre-wrap selection:bg-blue-100 selection:text-blue-900">
+            <div
+                className={`flex-1 overflow-y-auto p-6 bg-white text-gray-800 whitespace-pre-wrap selection:bg-blue-100 selection:text-blue-900 ${
+                    isReadmeFile
+                        ? isHncReadme
+                            ? "font-sans text-[14px] leading-7"
+                            : "font-sans text-[13px] leading-6"
+                        : file.type === "image"
+                            ? "font-sans"
+                        : "font-mono text-[13px] leading-relaxed"
+                }`}
+            >
                 {file.type === "link" ? (
                     <div className="flex flex-col items-center justify-center h-full gap-6">
                         <IconFileWeb size={96} />
@@ -427,6 +565,21 @@ function FilePreview({ file, onBack, dragControls, onFocus, onClose, onMinimize 
                             {language === "fr" ? "Ouvrir le site" : "Open Website"}
                         </a>
                     </div>
+                ) : file.type === "image" && file.url ? (
+                    <div className="flex flex-col gap-4">
+                        <div className="rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src={file.url}
+                                alt={file.name}
+                                className="w-full h-auto max-h-[62vh] object-contain"
+                                draggable={false}
+                            />
+                        </div>
+                        <div className="text-xs text-gray-500">{file.name}</div>
+                    </div>
+                ) : isReadmeFile && file.content ? (
+                    renderMarkdownLike(file.content)
                 ) : (
                     file.content || (language === "fr" ? "(Aucun contenu)" : "(No content)")
                 )}

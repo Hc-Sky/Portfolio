@@ -32,6 +32,7 @@ interface WindowProps {
 }
 
 export default function Window({
+    windowId,
     config,
     onClose,
     onFocus,
@@ -82,8 +83,8 @@ export default function Window({
                 position: "absolute",
                 zIndex,
                 width: WINDOW_WIDTH,
-                top: "10%", // Initial Y position (relative)
-                left: `calc(50% - ${WINDOW_WIDTH / 2}px)`, // Centered X
+                top: "10%",
+                left: `calc(50% - ${WINDOW_WIDTH / 2}px)`,
                 boxShadow: isFocused
                     ? "0 25px 50px -12px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0,0,0,0.05)"
                     : "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0,0,0,0.05)",
@@ -164,6 +165,7 @@ export default function Window({
                 >
                     <FinderLayout
                         config={config}
+                        projectId={windowId}
                         onOpenWindow={onOpenWindow}
                         onClose={onClose}
                         onMinimize={onMinimize}
@@ -263,7 +265,7 @@ function ReadmeContent() {
 
     return (
         <div className="space-y-6">
-            <h2 className="text-xl font-bold text-gray-900 tracking-tight">Hugo Cohen</h2>
+            <h2 className="text-xl font-bold text-gray-900 tracking-tight">Hugo Cohen--Cofflard</h2>
 
             <div className="space-y-4">
                 <p className="text-sm text-gray-600 leading-relaxed font-medium">
@@ -398,6 +400,14 @@ function CoreModulesContent() {
                         title: "SAE Gestion de Projet",
                         desc: "Rédaction de specs, planification, rétrospectives et suivi d’équipe.",
                     },
+                    {
+                        title: "Nutrika",
+                        desc: "Conception produit IA orientée nutrition : structuration des ingrédients, logique de recommandation et UX.",
+                    },
+                    {
+                        title: "HNC Studio",
+                        desc: "Écosystème créatif et technique personnel : branding, développement web et structuration d’un système ERP interne.",
+                    },
                 ],
             }
             : {
@@ -461,6 +471,14 @@ function CoreModulesContent() {
                     {
                         title: "SAE Gestion de Projet",
                         desc: "Specs writing, planning, retrospectives, and team follow-up.",
+                    },
+                    {
+                        title: "Nutrika",
+                        desc: "AI product design focused on nutrition: ingredient structuring, recommendation logic, and UX.",
+                    },
+                    {
+                        title: "HNC Studio",
+                        desc: "Personal creative and technical ecosystem: branding, web development, and internal ERP system design.",
                     },
                 ],
             };

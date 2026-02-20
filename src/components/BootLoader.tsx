@@ -28,7 +28,7 @@ export default function BootLoader({ progress, showStarting }: BootLoaderProps) 
 
                 <div className="space-y-1">
                     <div className="text-white/90 text-[15px] font-medium tracking-tight">
-                        Hugo Cohen (Cofflard)
+                        Hugo Cohen--Cofflard
                     </div>
                     <div className="text-white/50 text-[12px] font-medium tracking-[0.08em] uppercase">
                         Portfolio

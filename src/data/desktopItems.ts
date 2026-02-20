@@ -150,7 +150,11 @@ const desktopItemsEn: DesktopItem[] = [
                 },
                 {
                     heading: "Presentation",
-                    body: "https://www.canva.com/design/DAG2VFv3Pd0/PVODIpzZ5xgj2N2w9dtGxA/edit?utm_content=DAG2VFv3Pd0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton",
+                    body: "https://www.canva.com/design/DAF_2t06bxQ/PF4KbuE2XFDwZSMRZ6IfiQ/edit?utm_content=DAF_2t06bxQ&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton",
+                },
+                {
+                    heading: "Figma",
+                    body: "https://www.figma.com/design/MA46RXy8WckCIC9X5yzUgs/DA-PLAN-MY-MEAL",
                 },
             ],
             caseStudyUrl: "https://www.hackster.io/542656/nutrika-5ff838#toc-r-duisez-le-gaspillage-alimentaire--optimisez-votre-nutrition-et-connectez-votre-cuisine---l--re-de-l-iot-1",
@@ -169,27 +173,31 @@ const desktopItemsEn: DesktopItem[] = [
             sections: [
                 {
                     heading: "Context",
-                    body: "HNC Studio started as a creative initiative. It evolved into a structured ecosystem.",
+                    body: "HNC Studio started as a personal initiative. At first, it was simply a way to combine my interests: development, visual creation, and storytelling. Over time, it became a structured system.",
                 },
                 {
-                    heading: "Problem",
-                    body: "Creative projects become chaotic without structure: clients, deals, shootings, deliveries, invoicing. Most freelancers stack tools. I chose to design my own system.",
+                    heading: "Why I Created It",
+                    body: "During my studies and alternance, I realized I didn’t want to separate technical work from creative expression. Most projects isolate code, design, and strategy. I wanted to explore the intersection. HNC became a laboratory.",
                 },
                 {
-                    heading: "My Role",
-                    body: "Founder, creative direction, web development, motion design, and ERP architecture.",
+                    heading: "What It Is Today",
+                    body: "HNC Studio is a creative and technical ecosystem. It includes branding and visual direction, motion and storytelling, web development, and strategic positioning. Beyond that, I am currently designing an internal ERP system to structure everything: client onboarding, deal tracking, shooting planning, project workflows, and delivery pipelines. I did not want to stack tools. I wanted to design my own system.",
                 },
                 {
-                    heading: "Technical Approach",
-                    body: "Next.js + Tailwind + Framer Motion. Modular ERP logic with 'Golden Path' workflow structuring: Client → Deal → Project → Tasks → Delivery → Invoice.",
+                    heading: "What It Represents",
+                    body: "HNC is not just a studio. It reflects how I think: creativity requires structure, and structure enables freedom. It is my attempt to merge entrepreneurship, architecture, and visual language into one coherent system.",
                 },
                 {
                     heading: "What I Learned",
-                    body: "Creativity without structure collapses. Structure without creativity stagnates. The balance is intentional system design.",
+                    body: "Building HNC taught me decision-making under uncertainty, long-term vision, responsibility, and balancing creativity with constraints. It also made me understand that I am drawn not only to building tools, but to designing systems that evolve.",
                 },
                 {
-                    heading: "Why It Matters",
-                    body: "HNC reflects my desire to merge artistic direction with technical architecture.",
+                    heading: "Why It Matters in My Journey",
+                    body: "HNC is where everything connects: technical knowledge, creative exploration, leadership, and product thinking. It is not finished. It is evolving.",
+                },
+                {
+                    heading: "Instagram",
+                    body: "https://www.instagram.com/studiohnc/",
                 },
             ],
             caseStudyUrl: "https://hnc-studio.fr/",
@@ -418,7 +426,11 @@ const desktopItemsFr: DesktopItem[] = [
                 },
                 {
                     heading: "Présentation",
-                    body: "https://www.canva.com/design/DAG2VFv3Pd0/PVODIpzZ5xgj2N2w9dtGxA/edit?utm_content=DAG2VFv3Pd0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton",
+                    body: "https://www.canva.com/design/DAF_2t06bxQ/PF4KbuE2XFDwZSMRZ6IfiQ/edit?utm_content=DAF_2t06bxQ&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton",
+                },
+                {
+                    heading: "Figma",
+                    body: "https://www.figma.com/design/MA46RXy8WckCIC9X5yzUgs/DA-PLAN-MY-MEAL",
                 },
             ],
             caseStudyUrl: "https://www.hackster.io/542656/nutrika-5ff838#toc-r-duisez-le-gaspillage-alimentaire--optimisez-votre-nutrition-et-connectez-votre-cuisine---l--re-de-l-iot-1",
@@ -437,27 +449,31 @@ const desktopItemsFr: DesktopItem[] = [
             sections: [
                 {
                     heading: "Contexte",
-                    body: "HNC Studio a commencé comme une initiative créative. Elle a évolué en écosystème structuré.",
+                    body: "HNC Studio a commencé comme une initiative personnelle. Au départ, c’était simplement une façon de réunir mes centres d’intérêt : développement, création visuelle et storytelling. Avec le temps, c’est devenu un système structuré.",
                 },
                 {
-                    heading: "Problème",
-                    body: "Les projets créatifs deviennent chaotiques sans structure : clients, deals, shootings, livrables, facturation. La plupart empilent des outils. J’ai choisi de concevoir mon propre système.",
+                    heading: "Pourquoi je l’ai créé",
+                    body: "Pendant mes études et mon alternance, j’ai réalisé que je ne voulais pas séparer le travail technique de l’expression créative. La plupart des projets isolent le code, le design et la stratégie. Je voulais explorer leur intersection. HNC est devenu un laboratoire.",
                 },
                 {
-                    heading: "Mon rôle",
-                    body: "Fondateur, direction créative, développement web, motion design, architecture ERP.",
+                    heading: "Ce qu’il est aujourd’hui",
+                    body: "HNC Studio est un écosystème créatif et technique. Il inclut le branding et la direction visuelle, le motion et le storytelling, le développement web et le positionnement stratégique. Au-delà de ça, je conçois actuellement un ERP interne pour structurer l’ensemble : onboarding client, suivi des deals, planification des shootings, workflows projet et pipelines de livraison. Je ne voulais pas empiler des outils. Je voulais concevoir mon propre système.",
                 },
                 {
-                    heading: "Approche technique",
-                    body: "Next.js + Tailwind + Framer Motion. Logique ERP modulaire avec workflow « Golden Path » : Client → Deal → Projet → Tâches → Livraison → Facture.",
+                    heading: "Ce que ça représente",
+                    body: "HNC n’est pas juste un studio. Il reflète ma façon de penser : la créativité a besoin de structure, et la structure permet la liberté. C’est ma tentative de fusionner entrepreneuriat, architecture et langage visuel dans un système cohérent.",
                 },
                 {
                     heading: "Ce que j’ai appris",
-                    body: "La créativité sans structure s’effondre. La structure sans créativité stagne. L’équilibre se conçoit.",
+                    body: "Construire HNC m’a appris la prise de décision dans l’incertitude, la vision long terme, la responsabilité et l’équilibre entre créativité et contraintes. J’ai aussi compris que je suis attiré non seulement par la création d’outils, mais par le design de systèmes qui évoluent.",
                 },
                 {
-                    heading: "Pourquoi c’est important",
-                    body: "HNC reflète mon envie de fusionner direction artistique et architecture technique.",
+                    heading: "Pourquoi c’est important dans mon parcours",
+                    body: "HNC est l’endroit où tout se connecte : connaissances techniques, exploration créative, leadership et product thinking. Ce n’est pas terminé. C’est en évolution.",
+                },
+                {
+                    heading: "Instagram",
+                    body: "https://www.instagram.com/studiohnc/",
                 },
             ],
             caseStudyUrl: "https://hnc-studio.fr/",
@@ -532,10 +548,7 @@ const desktopItemsFr: DesktopItem[] = [
                     heading: "Ce que j’ai appris",
                     body: "L’interaction web évolue au-delà des interfaces statiques. L’espace change la perception.",
                 },
-                {
-                    heading: "Pourquoi c’est important",
-                    body: "",
-                },
+        
             ],
             caseStudyUrl: "https://fabyan09.github.io/gamesonweb/",
         },

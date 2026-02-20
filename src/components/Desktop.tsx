@@ -35,6 +35,25 @@ interface ParallaxOffset {
     y: number;
 }
 
+const WINDOW_OFFSETS: Array<{ x: number; y: number }> = [
+    { x: -260, y: 20 },
+    { x: 0, y: 28 },
+    { x: 260, y: 20 },
+    { x: -220, y: 110 },
+    { x: 40, y: 118 },
+    { x: 280, y: 100 },
+];
+
+function getWindowInitialOffset(index: number) {
+    const base = WINDOW_OFFSETS[index % WINDOW_OFFSETS.length];
+    const wave = Math.floor(index / WINDOW_OFFSETS.length);
+
+    return {
+        x: base.x + wave * 24,
+        y: base.y + wave * 20,
+    };
+}
+
 export default function Desktop() {
     /* ─── State ─── */
     const [windows, setWindows] = useState<Record<string, WindowState>>({});
@@ -305,7 +324,10 @@ export default function Desktop() {
 
             {/* Open windows */}
             <AnimatePresence>
-                {visibleWindows.map((w) => (
+                {visibleWindows.map((w) => {
+                    const initialOffset = getWindowInitialOffset(w.cascadeIndex);
+
+                    return (
                     <Window
                         key={w.id}
                         windowId={w.id}
@@ -316,13 +338,11 @@ export default function Desktop() {
                         onOpenWindow={openWindow}
                         zIndex={w.z}
                         isFocused={w.z === maxZ && windowList.length > 0}
-                        initialOffset={{
-                            x: w.cascadeIndex * 30,
-                            y: w.cascadeIndex * 30,
-                        }}
+                        initialOffset={initialOffset}
                         constraintsRef={constraintsRef}
                     />
-                ))}
+                    );
+                })}
             </AnimatePresence>
 
             {/* Dock — stop propagation */}

@@ -22,6 +22,8 @@ interface DockAppItem {
     labelFr?: string;
     /** When set, the icon is interactive: opens a window, shows tooltip */
     windowId?: string;
+    /** When set, click opens external URL */
+    externalUrl?: string;
     /** URL to the official macOS icon image */
     iconUrl: string;
     /** Show a small "running" dot below the icon (like macOS) */
@@ -56,10 +58,11 @@ const dockEntries: DockEntry[] = [
         iconUrl: "https://framerusercontent.com/images/KCaz69s4OvhKMUI25E1RBeuNIyA.png",
     },
     {
-        id: "safari",
-        label: "Safari",
-        labelFr: "Safari",
-        iconUrl: "https://framerusercontent.com/images/qQISGOSSnz748TdrZn91l44R5u0.png",
+        id: "github",
+        label: "GitHub",
+        labelFr: "GitHub",
+        externalUrl: "https://github.com/Hc-Sky",
+        iconUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",
     },
     // Interactive: opens "Contact" window (Messages → messaging)
     {
@@ -210,7 +213,7 @@ export default function Dock({
             <div
                     className="rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/15
                 shadow-[0_8px_32px_rgba(0,0,0,0.25)]
-                flex items-end px-6 pb-1 overflow-visible"
+                flex items-end px-6 pb-0 overflow-visible"
                 style={{ height: BASE_ICON_SIZE + 8 }}
             >
                 {/* Icons grow upward beyond the shell on hover via overflow-visible */}
@@ -274,6 +277,7 @@ function DockIcon({
     const ref = useRef<HTMLButtonElement>(null);
     const [showTooltip, setShowTooltip] = useState(false);
     const label = language === "fr" && item.labelFr ? item.labelFr : item.label;
+    const isInteractive = Boolean(item.windowId || item.externalUrl);
 
     // Distance from mouse to center of this icon
     const distance = useTransform(mouseX, (val: number) => {
@@ -292,8 +296,8 @@ function DockIcon({
 
     /** Click handler: restore if minimized, otherwise open */
     const handleClick = () => {
-        if (item.id === "safari") {
-            window.open("https://github.com/Hc-Sky", "_blank", "noopener,noreferrer");
+        if (item.externalUrl) {
+            window.open(item.externalUrl, "_blank", "noopener,noreferrer");
             return;
         }
         if (!item.windowId) return;
@@ -307,7 +311,7 @@ function DockIcon({
     return (
         <div className="relative flex flex-col items-center">
             {/* Tooltip — only for interactive icons */}
-            {showTooltip && (
+            {isInteractive && showTooltip && (
                 <motion.div
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -326,12 +330,12 @@ function DockIcon({
                 ref={ref}
                 style={{ width, height: width }}
                 onClick={handleClick}
-                onMouseEnter={() => setShowTooltip(true)}
-                onMouseLeave={() => setShowTooltip(false)}
+                    onMouseEnter={() => isInteractive && setShowTooltip(true)}
+                    onMouseLeave={() => setShowTooltip(false)}
                 className={`flex items-center justify-center rounded-xl select-none
           transition-shadow duration-150
           focus:outline-none 
-          ${item.windowId || item.id === "safari" ? "cursor-pointer hover:shadow-lg" : "cursor-default"}`}
+                ${isInteractive ? "cursor-pointer hover:shadow-lg" : "cursor-default"}`}
                 aria-label={label}
             >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
