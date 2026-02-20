@@ -15,7 +15,13 @@ import { useLanguage } from "@/context/LanguageContext";
 /* ─── Clickable line mappings ─── */
 
 /** Maps terminal line text → desktop item ID for clickable links */
-const LOGS = {
+type LogSet = {
+    clickableLines: Record<string, string>;
+    lines: string[];
+    statusLine: string;
+};
+
+const LOGS: { fr: LogSet; en: LogSet } = {
     fr: {
         clickableLines: {
             "[2024] HNC Studio.": "hnc-studio",
