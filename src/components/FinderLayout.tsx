@@ -156,18 +156,7 @@ function generateVirtualFiles(
         });
     }
 
-    // 3. Assets Folder (Decorative)
-    files.push({
-        id: "assets",
-        name: language === "fr" ? "Ressources" : "Assets",
-        type: "folder",
-        meta:
-            language === "fr"
-                ? `${resourceFiles.length} élément${resourceFiles.length > 1 ? "s" : ""}`
-                : `${resourceFiles.length} item${resourceFiles.length > 1 ? "s" : ""}`,
-    });
-
-    // 4. Image assets from /public/resources/projects/<projectId>
+    // 3. Image assets from /public/resources/projects/<projectId>
     resourceFiles.forEach((fileName, index) => {
         files.push({
             id: `resource-${index}`,
@@ -178,7 +167,7 @@ function generateVirtualFiles(
         });
     });
 
-    // 5. Specs.json (Technical details)
+    // 4. Specs.json (Technical details)
     if (config.bullets) {
         const jsonContent = JSON.stringify(
             config.bullets.reduce((acc, curr) => ({ ...acc, [curr.label]: curr.value }), {}),
