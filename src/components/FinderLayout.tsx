@@ -413,6 +413,7 @@ function FinderSidebar({
                             icon={<MacSidebarIcon type="resume" size={16} />}
                             label={language === "fr" ? "CV" : "Resume"}
                             active={false}
+                            onClick={() => window.open((process.env.NEXT_PUBLIC_BASE_PATH ?? "") + "/resume.pdf", "_blank")}
                         />
                         <SidebarItem
                             icon={<MacSidebarIcon type="trash" size={16} />}

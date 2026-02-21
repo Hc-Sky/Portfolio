@@ -57,7 +57,7 @@ export default function TopBar({ onOpenWindow }: TopBarProps) {
                     Contact
                 </button>
                 <button
-                    onClick={() => onOpenWindow("resume")}
+                    onClick={() => window.open((process.env.NEXT_PUBLIC_BASE_PATH ?? "") + "/resume.pdf", "_blank")}
                     className="opacity-70 hover:opacity-100 transition-opacity focus:outline-none focus:underline"
                 >
                     Resume

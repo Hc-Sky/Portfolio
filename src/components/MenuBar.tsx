@@ -113,9 +113,9 @@ export default function MenuBar({ onOpenWindow }: MenuBarProps) {
                     {language === "fr" ? "Contact" : "Contact"}
                 </button>
 
-                {/* Resume */}
+                {/* Resume — ouvre directement le PDF */}
                 <button
-                    onClick={() => onOpenWindow("resume")}
+                    onClick={() => window.open((process.env.NEXT_PUBLIC_BASE_PATH ?? "") + "/resume.pdf", "_blank")}
                     className="hover:opacity-70 transition-opacity"
                     style={{
                         fontWeight: 400,

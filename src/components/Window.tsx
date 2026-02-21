@@ -614,6 +614,8 @@ function TrashContent() {
 /* ─── Resume Content ─── */
 function ResumeContent() {
     const { language } = useLanguage();
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+    const resumeUrl = `${basePath}/resume.pdf`;
 
     return (
         <div className="space-y-5">
@@ -649,7 +651,7 @@ function ResumeContent() {
                     <button
                         className="px-4 py-2 bg-white border border-gray-200 rounded-md
               text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                        onClick={() => window.open("/resume.pdf", "_blank")}
+                        onClick={() => window.open(resumeUrl, "_blank")}
                     >
                         {language === "fr" ? "Aperçu" : "Preview"}
                     </button>
@@ -658,7 +660,7 @@ function ResumeContent() {
               text-sm font-medium hover:bg-gray-800 transition-colors"
                         onClick={() => {
                             const link = document.createElement("a");
-                            link.href = "/resume.pdf";
+                            link.href = resumeUrl;
                             link.download =
                                 language === "fr"
                                     ? "CV_Hugo_Cohen_Cofflard.pdf"
