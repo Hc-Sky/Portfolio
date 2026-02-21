@@ -32,7 +32,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HNC OS — Portfolio",
+  title: "Portfolio de Hugo Cohen-Cofflard",
   description:
     "Portfolio interactif de Hugo Cohen-Cofflard — Candidature Master Ingémédia, Toulon.",
 };
