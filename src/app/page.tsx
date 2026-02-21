@@ -32,6 +32,26 @@ export default function Home() {
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
+  useEffect(() => {
+    if (isDesktop === null) return;
+    const className = "desktop-lock";
+    const html = document.documentElement;
+    const body = document.body;
+
+    if (isDesktop) {
+      html.classList.add(className);
+      body.classList.add(className);
+    } else {
+      html.classList.remove(className);
+      body.classList.remove(className);
+    }
+
+    return () => {
+      html.classList.remove(className);
+      body.classList.remove(className);
+    };
+  }, [isDesktop]);
+
   // Avoid flash of content while detecting viewport
   if (isDesktop === null) {
     return (
