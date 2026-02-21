@@ -25,6 +25,8 @@ interface VirtualFile {
     meta?: string; // e.g., "4 KB"
 }
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 const PROJECT_RESOURCE_FILES: Record<string, string[]> = {
     nutrika: ["nutrika.png"],
     "hnc-studio": ["hnc_logo.svg"],
@@ -162,7 +164,7 @@ function generateVirtualFiles(
             id: `resource-${index}`,
             name: fileName,
             type: "image",
-            url: `/resources/projects/${projectId}/${fileName}`,
+            url: `${BASE_PATH}/resources/projects/${projectId}/${fileName}`,
             meta: language === "fr" ? "Image" : "Image",
         });
     });

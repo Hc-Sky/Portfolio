@@ -579,7 +579,7 @@ export default function DesktopOnly() {
     const [time, setTime] = useState("");
     const [openApp, setOpenApp] = useState<AppId | null>(null);
 
-    const basePath = process.env.NODE_ENV === "production" ? "/Portfolio" : "";
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
     // Live clock
     useEffect(() => {

@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   basePath: isProd ? "/Portfolio" : undefined,
   assetPrefix: isProd ? "/Portfolio/" : undefined,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isProd ? "/Portfolio" : "",
+  },
 };
 
 export default nextConfig;
